@@ -12,11 +12,15 @@ PRODUCT_BRAND := HP
 PRODUCT_DEVICE := tenderloin
 PRODUCT_MODEL := Touchpad
 PRODUCT_MANUFACTURER := HP
-PRODUCT_BUILD_PROP_OVERRIDES += PRODUCT_NAME=touchpad BUILD_ID=GWK74 BUILD_FINGERPRINT=google/yakju/maguro:4.0.1/ITL41D/223971:user/release-keys PRIVATE_BUILD_DESC="yakju-user 4.0.1 ITL41D 223971 release-keys" BUILD_NUMBER=189904
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    PRODUCT_NAME=touchpad \
+    BUILD_ID=HLK75F \
+    BUILD_FINGERPRINT="verizon/trygon/stingray:3.2.4/HLK75F/221360:user/release-keys" \
+    PRIVATE_BUILD_DESC="trygon-user 3.2.4 HLK75F 221360 release-keys"
 
 # Set up the product codename, build version & MOTD.
 PRODUCT_CODENAME := Queo
-PRODUCT_VERSION_DEVICE_SPECIFIC := p2
+PRODUCT_VERSION_DEVICE_SPECIFIC := p3
 
 PRODUCT_MOTD :="\n\n\n--------------------MESSAGE---------------------\nThank you for choosing Evervolv for your HP Touchpad\nPlease visit us at \#evervolv on irc.freenode.net\nFollow @preludedrew for the latest Evervolv updates\nGet the latest rom at evervolv.com\n------------------------------------------------\n"
 
