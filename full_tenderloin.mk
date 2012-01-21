@@ -34,7 +34,8 @@ PRODUCT_COPY_FILES += \
     device/hp/tenderloin/init.qcom.bt.sh:system/etc/init.qcom.bt.sh \
     device/hp/tenderloin/prebuilt/bluetooth/hciattach:system/bin/hciattach_awesome \
     device/hp/tenderloin/makemulti.sh:makemulti.sh \
-    device/hp/tenderloin/prebuilt/boot/moboot.splash.ICS.tga:moboot.splash.ICS.tga
+    device/hp/tenderloin/prebuilt/boot/moboot.splash.Evervolv.tga:moboot.splash.Evervolv.tga \
+    device/hp/tenderloin/prebuilt/boot/moboot.default:moboot.default
 
 # Add touchcreen configuration file
 PRODUCT_COPY_FILES += \
