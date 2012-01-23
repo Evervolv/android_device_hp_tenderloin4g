@@ -95,7 +95,7 @@ PRODUCT_COPY_FILES += \
     device/hp/tenderloin/prebuilt/modules/ntfs.ko:system/lib/modules/ntfs.ko \
     device/hp/tenderloin/prebuilt/modules/oprofile.ko:system/lib/modules/oprofile.ko \
     device/hp/tenderloin/prebuilt/modules/scsi_wait_scan.ko:system/lib/modules/scsi_wait_scan.ko \
-    device/hp/tenderloin/prebuilt/modules/tpc_bic.ko:system/lib/modules/tcp_bic.ko \
+    device/hp/tenderloin/prebuilt/modules/tcp_bic.ko:system/lib/modules/tcp_bic.ko \
     device/hp/tenderloin/prebuilt/modules/tun.ko:system/lib/modules/tun.ko
 
 #Wifi Firmware

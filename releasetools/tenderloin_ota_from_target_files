@@ -119,8 +119,8 @@ def WriteFullOTAPackage(input_zip, output_zip):
 
   # Delete CyanongenMod uImage traces.
 
-  cm = {"/boot/uImage.CyanogenMod", "/boot/moboot.splash.CyanogenMod.tga",
-        "/boot/uImage.ICS", "/boot/moboot.splash.ICS.tga"}
+  cm = ["/boot/uImage.CyanogenMod", "/boot/moboot.splash.CyanogenMod.tga",
+        "/boot/uImage.ICS", "/boot/moboot.splash.ICS.tga"]
   script.DeleteFiles(cm)
 
   # -- tenderloin build change done
