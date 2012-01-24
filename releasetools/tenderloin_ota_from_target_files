@@ -115,7 +115,12 @@ def WriteFullOTAPackage(input_zip, output_zip):
   common.ZipWriteStr(output_zip, "moboot.splash.Evervolv.tga", moboot_tga.read())
   moboot_tga.close()
 
+  moboot_default = open(OPTIONS.device_out + "/moboot.default")
+  common.ZipWriteStr(output_zip, "moboot.default", moboot_default.read())
+  moboot_tga.close()
+
   script.UnpackPackageFile("moboot.splash.Evervolv.tga", "/boot/moboot.splash.Evervolv.tga")
+  script.UnpackPackageFile("moboot.default", "/boot/moboot.default")
 
   # Delete CyanongenMod uImage traces.
 
