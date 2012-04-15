@@ -164,7 +164,8 @@ PRODUCT_PACKAGES += \
     dosfsck \
     bcattach \
     serial \
-    com.android.future.usb.accessory
+    com.android.future.usb.accessory \
+    rebootcmd
 
 PRODUCT_PACKAGES += \
 	make_ext4fs
