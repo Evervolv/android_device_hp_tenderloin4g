@@ -88,19 +88,10 @@ PRODUCT_COPY_FILES += \
 
 # Kernel modules
 PRODUCT_COPY_FILES += \
-    device/hp/tenderloin/prebuilt/modules/ansi_cprng.ko:system/lib/modules/ansi_cprng.ko \
     device/hp/tenderloin/prebuilt/wifi/ar6000.ko:system/lib/modules/ar6000.ko \
     device/hp/tenderloin/prebuilt/modules/cifs.ko:system/lib/modules/cifs.ko \
-    device/hp/tenderloin/prebuilt/modules/cpaccess.ko:system/lib/modules/cpaccess.ko \
-    device/hp/tenderloin/prebuilt/modules/dma_test.ko:system/lib/modules/dma_test.ko \
-    device/hp/tenderloin/prebuilt/modules/gspca_main.ko:system/lib/modules/gspca_main.ko \
-    device/hp/tenderloin/prebuilt/modules/lcd.ko:system/lib/modules/lcd.ko \
-    device/hp/tenderloin/prebuilt/modules/librasdioif.ko:system/lib/modules/librasdioif.ko \
     device/hp/tenderloin/prebuilt/modules/nls_utf8.ko:system/lib/modules/nls_utf8.ko \
     device/hp/tenderloin/prebuilt/modules/ntfs.ko:system/lib/modules/ntfs.ko \
-    device/hp/tenderloin/prebuilt/modules/oprofile.ko:system/lib/modules/oprofile.ko \
-    device/hp/tenderloin/prebuilt/modules/scsi_wait_scan.ko:system/lib/modules/scsi_wait_scan.ko \
-    device/hp/tenderloin/prebuilt/modules/tcp_bic.ko:system/lib/modules/tcp_bic.ko \
     device/hp/tenderloin/prebuilt/modules/tun.ko:system/lib/modules/tun.ko
 
 #Wifi Firmware
