@@ -14,7 +14,6 @@ PRODUCT_MODEL := Touchpad
 PRODUCT_MANUFACTURER := HP
 PRODUCT_BUILD_PROP_OVERRIDES += \
     PRODUCT_NAME=touchpad \
-    BUILD_ID=HLK75F \
     BUILD_FINGERPRINT="verizon/trygon/stingray:3.2.4/HLK75F/221360:user/release-keys" \
     PRIVATE_BUILD_DESC="trygon-user 3.2.4 HLK75F 221360 release-keys"
 
