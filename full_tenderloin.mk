@@ -45,6 +45,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin/boot_webos:system/bin/boot_webos
 
+# media minor check boot script
+PRODUCT_COPY_FILES += \
+    device/hp/tenderloin/prebuilt/etc/init.d/10check_media_minor:system/etc/init.d/10check_media_minor
+
 # Vold configuration
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin/vold.fstab:system/etc/vold.fstab \
