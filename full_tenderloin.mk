@@ -148,6 +148,14 @@ PRODUCT_PACKAGES += \
     libgenlock \
     libQcomUI
 
+# QCOM OMX
+PRODUCT_PACKAGES += \
+    libstagefrighthw \
+    libOmxCore \
+    libmm-omxcore \
+    libdivxdrmdecrypt \
+    libOmxVdec
+
 # Audio
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
