@@ -4,4 +4,5 @@
     <bool name="config_has_gps" translatable="false">false</bool>
     <bool name="config_has_wimax" translatable="false">false</bool>
     <bool name="config_has_mobile_data" translatable="false">false</bool>
+    <bool name="config_has_mobile_radio" translatable="false">false</bool>
 </resources>
