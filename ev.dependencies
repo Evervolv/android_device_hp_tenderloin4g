@@ -1,0 +1,7 @@
+[
+ {
+    "repository": "android_kernel_hp_tenderloin",
+    "target_path": "kernel/hp/tenderloin",
+    "branch": "ics"
+ }
+]

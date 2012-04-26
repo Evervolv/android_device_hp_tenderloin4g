@@ -88,7 +88,6 @@ PRODUCT_COPY_FILES += \
 
 # Kernel modules
 PRODUCT_COPY_FILES += \
-    device/hp/tenderloin/prebuilt/wifi/ar6000.ko:system/lib/modules/ar6000.ko \
     device/hp/tenderloin/prebuilt/modules/cifs.ko:system/lib/modules/cifs.ko \
     device/hp/tenderloin/prebuilt/modules/nls_utf8.ko:system/lib/modules/nls_utf8.ko \
     device/hp/tenderloin/prebuilt/modules/ntfs.ko:system/lib/modules/ntfs.ko \
@@ -121,9 +120,14 @@ PRODUCT_COPY_FILES += \
     device/hp/tenderloin/prebuilt/wifi/ath6k/AR6002/athwlan.bin.z77:/system/etc/firmware/ath6k/AR6002/athwlan.bin.z77 \
     device/hp/tenderloin/prebuilt/wifi/ath6k/AR6002/eeprom.bin:/system/etc/firmware/ath6k/AR6002/eeprom.bin \
     device/hp/tenderloin/prebuilt/wifi/ath6k/LICENSE.atheros_firmware:/system/etc/firmware/ath6k/LICENSE.atheros_firmware \
-    device/hp/tenderloin/prebuilt/wifi/ath6k/AR6003/hw2.0/bdata.SD32.bin:/system/etc/firmware/ath6k/AR6003/hw2.0/bdata.CUSTOM.bin \
+    device/hp/tenderloin/prebuilt/wifi/ath6k/AR6003/hw26.0/bdata.SD32.bin:/system/etc/firmware/ath6k/AR6003/hw2.0/bdata.CUSTOM.bin \
     device/hp/tenderloin/prebuilt/wifi/ath6k/AR6003/hw2.1.1/bdata.SD32.bin:/system/etc/firmware/ath6k/AR6003/hw2.1.1/bdata.CUSTOM.bin \
     device/hp/tenderloin/prebuilt/wifi/ath6k/AR6003/hw1.0/bdata.SD32.bin:/system/etc/firmware/ath6k/AR6003/hw1.0/bdata.CUSTOM.bin
+
+# Wifi Firmware
+# Temporary hack for ATH6KL
+PRODUCT_COPY_FILES += \
+    device/hp/tenderloin/prebuilt/wifi/ath6k/AR6003/hw2.1.1/bdata.SD32.bin:/system/etc/firmware/ath6k/AR6003/hw2.1.1/bdata.bin
 
 # We have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
@@ -181,17 +185,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.com.google.networklocation=1 \
     dalvik.vm.lockprof.threshold=500 \
     dalvik.vm.dexopt-flags=m=y
-
-# Prebuilt kernel.
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-	LOCAL_KERNEL := device/hp/tenderloin/prebuilt/boot/kernel
-else
-	LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-endif
-
-# Copy the kernel.
-PRODUCT_COPY_FILES += \
-    $(LOCAL_KERNEL):kernel
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 $(call inherit-product, frameworks/base/build/tablet-dalvik-heap.mk)

@@ -32,15 +32,13 @@ TARGET_SCORPION_BIONIC_PLDSIZE := 128
 
 COMMON_GLOBAL_CFLAGS += -DREFRESH_RATE=59 -DQCOM_HARDWARE -DUSES_AUDIO_LEGACY
 
-
 # Wifi related defines
-BOARD_WPA_SUPPLICANT_DRIVER := ar6000
-CONFIG_DRIVER_AR6000 := true
-WPA_SUPPLICANT_VERSION      := VER_0_6_X
-BOARD_WLAN_DEVICE           := ar6000
-WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/ar6000.ko"
-WIFI_DRIVER_MODULE_NAME     := "ar6000"
-BOARD_WEXT_NO_COMBO_SCAN	:= true
+BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_ath6kl
+WPA_SUPPLICANT_VERSION           := VER_0_8_X
+BOARD_WLAN_DEVICE                := ath6kl
+WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/ath6kl.ko"
+WIFI_DRIVER_MODULE_NAME          := "ath6kl"
 
 # Audio
 BOARD_USES_AUDIO_LEGACY := true
@@ -95,8 +93,24 @@ BOARD_USES_UBOOT_MULTIIMAGE := true
 # use dosfsck from dosfstools
 BOARD_USES_CUSTOM_FSCK_MSDOS := true
 
+# Define kernel config for inline building
+TARGET_KERNEL_CONFIG := tenderloin_android_defconfig
+
+
 # Define Prebuilt kernel locations
 TARGET_PREBUILT_KERNEL := device/hp/tenderloin/prebuilt/boot/kernel
+
+# kernel
+TARGET_KERNEL_SOURCE := kernel/hp/tenderloin
+EXTRA_MODULES:
+	cd external/compat-wireless-3.3-rc1-2; ./scripts/driver-select ath6kl
+	export CROSS_COMPILE=$(ARM_EABI_TOOLCHAIN)/arm-eabi-; $(MAKE) -C external/compat-wireless-3.3-rc1-2 KLIB=$(KERNEL_SRC) KLIB_BUILD=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE)
+	export CROSS_COMPILE=$(ARM_EABI_TOOLCHAIN)/arm-eabi-; $(MAKE) -C external/compat-wireless-3.3-rc1-2 KLIB=$(KERNEL_SRC) KLIB_BUILD=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE) install-modules
+	cp `find $(KERNEL_OUT)/$(TARGET_KERNEL_SOURCE) -name *.ko` $(KERNEL_MODULES_OUT)/
+	arm-eabi-strip --strip-debug `find $(KERNEL_MODULES_OUT) -name *.ko`
+	cd external/compat-wireless-3.3-rc1-2; ./scripts/driver-select restore
+
+TARGET_KERNEL_MODULES := EXTRA_MODULES
 
 TARGET_RECOVERY_INITRC := device/hp/tenderloin/recovery/init.rc
 
