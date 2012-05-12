@@ -101,6 +101,7 @@ TARGET_KERNEL_CONFIG := tenderloin_android_defconfig
 TARGET_PREBUILT_KERNEL := device/hp/tenderloin/prebuilt/boot/kernel
 
 # kernel
+BUILD_KERNEL := true
 TARGET_KERNEL_SOURCE := kernel/hp/tenderloin
 EXTRA_MODULES:
 	cd external/compat-wireless-3.3-rc1-2; ./scripts/driver-select ath6kl
