@@ -96,7 +96,7 @@ def WriteFullOTAPackage(input_zip, output_zip):
   script.Print("Installing Evervolv")
   script.UnpackPackageDir("system", "/system")
 
-  symlinks,retouch_files = CopySystemFiles(input_zip, output_zip)
+  symlinks = CopySystemFiles(input_zip, output_zip)
   script.MakeSymlinks(symlinks)
 
   # -- tenderloin build change starting
