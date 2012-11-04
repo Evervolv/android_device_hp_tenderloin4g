@@ -224,3 +224,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 $(call inherit-product, frameworks/native/build/tablet-dalvik-heap.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+
+PRODUCT_NAME := hp_tenderloin
+PRODUCT_DEVICE := tenderloin
+PRODUCT_MODEL := Full Android on Tenderloin
