@@ -14,8 +14,8 @@ PRODUCT_MODEL := Touchpad
 PRODUCT_MANUFACTURER := HP
 PRODUCT_BUILD_PROP_OVERRIDES += \
     PRODUCT_NAME=touchpad \
-    BUILD_FINGERPRINT="motorola/tervigon/wingray:4.0.3/IML77/239789:user/release-keys" \
-    PRIVATE_BUILD_DESC="tervigon-user 4.0.3 IML77 239789 release-keys"
+    BUILD_FINGERPRINT="google/mantaray/manta:4.2.1/JOP40C/527662:user/release-keys" \
+    PRIVATE_BUILD_DESC="manta-user 4.2.1 JOP40C 527662 release-keys"
 
 # Set up the product codename, build version & MOTD.
 PRODUCT_CODENAME := Queo
