@@ -42,7 +42,7 @@ WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/ath6kl.ko"
 WIFI_DRIVER_MODULE_NAME          := "ath6kl"
 
 # Audio
-BOARD_USES_AUDIO_LEGACY := false
+TARGET_QCOM_AUDIO_VARIANT := caf
 BOARD_USES_GENERIC_AUDIO := false
 TARGET_PROVIDES_LIBAUDIO := false
 BOARD_USES_ALSA_AUDIO := false
@@ -54,11 +54,13 @@ BOARD_HAVE_BLUETOOTH_CSR := true
 
 # Define egl.cfg location
 BOARD_EGL_CFG := device/hp/tenderloin/egl.cfg
+BOARD_EGL_NEEDS_LEGACY_FB := true
 USE_OPENGL_RENDERER := true
 
 # QCOM HAL
 BOARD_USES_QCOM_HARDWARE := true
 TARGET_USES_OVERLAY := false
+BOARD_USES_LEGACY_OVERLAY := true
 TARGET_HAVE_BYPASS  := false
 TARGET_USES_SF_BYPASS := false
 TARGET_USES_C2D_COMPOSITION := true

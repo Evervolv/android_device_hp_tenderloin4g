@@ -3,5 +3,11 @@
     "repository": "android_kernel_hp_tenderloin",
     "target_path": "kernel/hp/tenderloin",
     "branch": "jellybean"
+ },
+ {
+    "repository": "android_hardware_qcom_audio-caf",
+    "target_path": "hardware/qcom/audio-caf",
+    "branch": "jellybean",
+    "dep_type": "hardware"
  }
 ]
