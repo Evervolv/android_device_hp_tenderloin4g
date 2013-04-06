@@ -152,10 +152,11 @@ PRODUCT_PACKAGES += \
 # QCOM OMX
 PRODUCT_PACKAGES += \
     libstagefrighthw \
-#    libOmxCore \
-#    libmm-omxcore \
-#    libdivxdrmdecrypt \
-#    libOmxVdec
+    libOmxCore \
+    libmm-omxcore \
+    libdivxdrmdecrypt \
+    libOmxVdec \
+    libOMXVenc
 
 # Audio
 PRODUCT_PACKAGES += \
