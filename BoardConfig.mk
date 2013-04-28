@@ -20,7 +20,8 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_CPU_SMP := true
 TARGET_ARCH := arm
 ARCH_ARM_HAVE_TLS_REGISTER := true
-
+TARGET_DISABLE_ARM_PIE := true
+BOARD_NEEDS_MEMORYHEAPPMEM := true
 
 TARGET_NO_RADIOIMAGE := true
 TARGET_HAVE_TSLIB := false
@@ -86,7 +87,7 @@ BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
 TARGET_USES_OVERLAY := true
 
 BOARD_OVERLAY_FORMAT_YCbCr_420_SP := true
-USE_CAMERA_STUB := true
+USE_CAMERA_STUB := false
 
 # tenderloin- these kernel settings are temporary to complete build
 BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=qcom

@@ -54,9 +54,6 @@ PRODUCT_COPY_FILES += \
     device/hp/tenderloin/vold.fstab:system/etc/vold.fstab \
 
 PRODUCT_COPY_FILES += \
-    device/hp/tenderloin/media_profiles.xml:/system/etc/media_profiles.xml \
-
-PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml \
     frameworks/native/data/etc/android.hardware.camera.autofocus.xml:system/etc/permissions/android.hardware.camera.autofocus.xml \
@@ -156,7 +153,13 @@ PRODUCT_PACKAGES += \
     libmm-omxcore \
     libdivxdrmdecrypt \
     libOmxVdec \
-    libOMXVenc
+    libOMXVenc \
+    libOmxAacEnc \
+    libOmxAmrEnc
+
+# Camera
+PRODUCT_PACKAGES += \
+    camera.msm8660
 
 # Audio
 PRODUCT_PACKAGES += \
