@@ -31,8 +31,6 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin/prebuilt/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-    device/hp/tenderloin/init.qcom.bt.sh:system/etc/init.qcom.bt.sh \
-    device/hp/tenderloin/prebuilt/bluetooth/hciattach:system/bin/hciattach_awesome \
     device/hp/tenderloin/makemulti.sh:makemulti.sh \
     device/hp/tenderloin/prebuilt/boot/moboot.splash.Evervolv.tga:moboot.splash.Evervolv.tga \
     device/hp/tenderloin/prebuilt/boot/moboot.default:moboot.default
