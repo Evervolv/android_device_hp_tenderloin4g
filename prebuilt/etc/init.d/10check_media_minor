@@ -15,7 +15,7 @@ fi
 MM=`/system/xbin/ls -lLn /dev/store/media | sed -r -e 's/ +/\t/g' | cut -f6`
 
 # get the existing vold.fstab SDCARD= value
-OSTR=`sed -rn -e 's/.*(SDCARD=.*)$/\1/p' /system/etc/vold.fstab`
+OSTR=`sed -rn -e 's/.*(SDCARD=.*)$/\1/p' /fstab.tenderloin`
 
 if [ -z "${OSTR}" ];
 then
@@ -25,7 +25,7 @@ fi
 
 if [ -n "${MM}" ];
 then
-	NSTR="SDCARD=/dev/block/dm-${MM}"
+	NSTR="SDCARD=/devices/virtual/block/dm-${MM}"
 
 	# just exit if no change needed
 	if [ "x${OSTR}" == "x${NSTR}" ];
@@ -33,14 +33,14 @@ then
 		exit 0
 	fi
 	
-	echo "$0: Setting vold.fstab media SDCARD=/dev/block/dm-${MM}"
+	echo "$0: Setting vold.fstab media SDCARD=/devices/virtual/block/dm-${MM}"
 
 	# remount /system read-write
 	mount -o remount,rw /system
 
 	# make the change
-	sed -e "s/SDCARD=.*$/SDCARD=\/dev\/block\/dm-${MM}/" -i \
-		/system/etc/vold.fstab
+	sed -e "s/SDCARD=.*$/SDCARD=\/devices\/virtual\/block\/dm-${MM}/" -i \
+		/fstab.tenderloin
 
 	# remount /system read-only
 	mount -o remount,ro /system

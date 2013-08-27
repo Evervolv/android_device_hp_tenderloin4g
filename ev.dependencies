@@ -1,25 +1,30 @@
 [
  {
     "repository": "android_kernel_hp_tenderloin",
-    "target_path": "kernel/hp/tenderloin",
-    "branch": "jellybean"
+    "target_path": "kernel/hp/tenderloin"
  },
  {
     "repository": "android_hardware_qcom_audio-caf",
     "target_path": "hardware/qcom/audio-caf",
-    "branch": "jellybean",
     "dep_type": "hardware"
  },
  {
     "repository": "android_hardware_qcom_display-legacy",
     "target_path": "hardware/qcom/display-legacy",
-    "branch": "jellybean",
     "dep_type": "hardware"
  },
  {
     "repository": "android_hardware_qcom_media-legacy",
     "target_path": "hardware/qcom/media-legacy",
-    "branch": "jellybean",
+    "dep_type": "hardware"
+ },
+ {
+    "repository": "android_external_compat-wireless-3.5-rc3-1-sn",
+    "target_path": "external/compat-wireless-3.5-rc3-1-sn"
+ },
+ {
+    "repository": "android_hardware_atheros",
+    "target_path": "hardware/atheros",
     "dep_type": "hardware"
  }
 ]

@@ -17,6 +17,7 @@ BOARD_USES_ADRENO_200 := true
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
+TARGET_CPU_VARIANT := cortex-a8
 TARGET_CPU_SMP := true
 TARGET_ARCH := arm
 ARCH_ARM_HAVE_TLS_REGISTER := true
@@ -32,6 +33,9 @@ TARGET_USE_SCORPION_PLD_SET := true
 TARGET_SCORPION_BIONIC_PLDOFFS := 6
 TARGET_SCORPION_BIONIC_PLDSIZE := 128
 
+TARGET_RECOVERY_FSTAB := device/hp/tenderloin/fstab.tenderloin
+RECOVERY_FSTAB_VERSION := 2
+
 COMMON_GLOBAL_CFLAGS += -DREFRESH_RATE=59 -DQCOM_HARDWARE -DQCOM_NO_SECURE_PLAYBACK
 
 # Wifi related defines
@@ -44,6 +48,7 @@ WIFI_DRIVER_MODULE_NAME          := "ath6kl"
 
 # Audio
 TARGET_QCOM_AUDIO_VARIANT := caf
+BOARD_USES_LEGACY_ALSA_AUDIO := true
 BOARD_USES_GENERIC_AUDIO := false
 TARGET_PROVIDES_LIBAUDIO := false
 BOARD_USES_ALSA_AUDIO := false
@@ -117,12 +122,11 @@ TARGET_PREBUILT_KERNEL := device/hp/tenderloin/prebuilt/boot/kernel
 BUILD_KERNEL := true
 TARGET_KERNEL_SOURCE := kernel/hp/tenderloin
 EXTRA_MODULES:
-	cd external/compat-wireless-3.5-rc3-1-sn; ./scripts/driver-select ath6kl
-	export CROSS_COMPILE=$(ARM_EABI_TOOLCHAIN)/arm-eabi-; $(MAKE) -C external/compat-wireless-3.5-rc3-1-sn KLIB=$(KERNEL_SRC) KLIB_BUILD=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE)
-	export CROSS_COMPILE=$(ARM_EABI_TOOLCHAIN)/arm-eabi-; $(MAKE) -C external/compat-wireless-3.5-rc3-1-sn KLIB=$(KERNEL_SRC) KLIB_BUILD=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE) install-modules
-	cp `find $(KERNEL_OUT)/$(TARGET_KERNEL_SOURCE) -name *.ko` $(KERNEL_MODULES_OUT)/
+	$(MAKE) -C external/backports-wireless defconfig-ath6kl
+	export CROSS_COMPILE=$(ARM_EABI_TOOLCHAIN)/arm-eabi-; $(MAKE) -C external/backports-wireless KLIB=$(KERNEL_SRC) KLIB_BUILD=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE)
+	cp `find external/backports-wireless -name *.ko` $(KERNEL_MODULES_OUT)/
 	arm-eabi-strip --strip-debug `find $(KERNEL_MODULES_OUT) -name *.ko`
-	cd external/compat-wireless-3.5-rc3-1-sn; ./scripts/driver-select restore
+	$(MAKE) -C external/backports-wireless clean
 
 TARGET_KERNEL_MODULES := EXTRA_MODULES
 

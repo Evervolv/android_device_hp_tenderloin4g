@@ -1,0 +1,13 @@
+#<src> <mnt_point> <type> <mnt_flags and options> <fs_mgr_flags>  
+
+
+/dev/store/cm-system /system ext4 ro,barrier=1 wait
+/dev/store/cm-data /data ext4 noatime,nosuid,nodev,barrier=1,noauto_da_alloc wait
+/dev/store/cm-cache /cache ext4 noatime,nosuid,nodev,barrier=1 wait
+
+#Thanks to drmarble
+/devices/virtual/block/dm-6  /storage/sdcard0  auto    defaults            voldmanaged=sdcard:auto,wait,nonremovable
+
+#recovery
+/dev/block/mmcblk0p13 /boot ext3 ro,noatime,barrier=1 recoveryonly
+/dev/store/media /sdcard vfat noatime,nosuid,nodev,barrier=1,noauto_da_alloc recoveryonly

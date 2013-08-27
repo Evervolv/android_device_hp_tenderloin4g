@@ -25,11 +25,7 @@ on init
     # not /dev/block
     symlink /dev/block/mmcblk0p14 /dev/mmcblk0p14
     exec /boot/bin/sh -c "LVM_SYSTEM_DIR=/boot/etc/lvm /boot/usr/sbin/lvm.static vgchange -ay"
-
-    # regular mounts
-    mount ext4 /dev/store/cm-system /system wait ro barrier=1
-    mount ext4 /dev/store/cm-data /data wait noatime nosuid nodev barrier=1 noauto_da_alloc
-    mount ext4 /dev/store/cm-cache /cache wait noatime nosuid nodev barrier=1
+    mount ext3 /dev/block/mmcblk0p13 /boot remount ro wait noatime barrier=1
 
     # remove all the lvm stuff as well as the moboot nextboot instruction
     exec /system/xbin/rm -rf /dev/mmcblk0p14 /lib /boot/moboot.next /var
@@ -37,12 +33,13 @@ on init
     # remount /boot read-only
     mount ext3 /dev/block/mmcblk0p13 /boot remount ro wait noatime barrier=1
 
-
     export EXTERNAL_STORAGE /storage/sdcard0
     mkdir /storage/sdcard0 0000 system system
     # for backwards compatibility
     symlink /storage/sdcard0 /mnt/sdcard
     symlink /mnt/sdcard /sdcard
+
+    mount_all /fstab.tenderloin
 
 on post-fs
 	# camera calibration
@@ -149,8 +146,14 @@ on boot
     # change permissions for i2c-2 device
 	chmod 0660 /dev/i2c-2
 	chown media media /dev/i2c-2
+	
+on property:persist.service.adb.enable=1
+    start adbd
 
-service wpa_supplicant /system/bin/wpa_supplicant -Dnl80211 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+on property:persist.service.adb.enable=0
+    stop adbd
+
+service wpa_supplicant /system/bin/wpa_supplicant -dd -Dnl80211 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
 	#   we will start as root and wpa_supplicant will switch to user wifi
 	#   after setting up the capabilities required for WEXT
 	#   user wifi

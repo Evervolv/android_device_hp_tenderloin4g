@@ -31,6 +31,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin/prebuilt/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+    device/hp/tenderloin/fstab.tenderloin:root/fstab.tenderloin \
     device/hp/tenderloin/makemulti.sh:makemulti.sh \
     device/hp/tenderloin/prebuilt/boot/moboot.splash.Evervolv.tga:moboot.splash.Evervolv.tga \
     device/hp/tenderloin/prebuilt/boot/moboot.default:moboot.default
@@ -46,10 +47,6 @@ PRODUCT_COPY_FILES += \
 # media minor check boot script
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin/prebuilt/etc/init.d/10check_media_minor:system/etc/init.d/10check_media_minor
-
-# Vold configuration
-PRODUCT_COPY_FILES += \
-    device/hp/tenderloin/vold.fstab:system/etc/vold.fstab \
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
@@ -162,10 +159,7 @@ PRODUCT_PACKAGES += \
 # Audio
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
-    audio.primary.tenderloin \
-    tinymix \
-    tinyplay \
-    tinycap
+    audio.primary.tenderloin
 
 # Audio xml Files
 PRODUCT_COPY_FILES += \

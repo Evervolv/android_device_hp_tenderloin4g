@@ -14,6 +14,9 @@ debug.fb.rgb565 = 0
 debug.sf.hw=1
 debug.enabletr=false
 
+#multi user support
+fw.max_users = 5
+
 com.qc.hardware=true
 
 #c2d
