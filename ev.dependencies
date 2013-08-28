@@ -19,8 +19,8 @@
     "dep_type": "hardware"
  },
  {
-    "repository": "android_external_compat-wireless-3.5-rc3-1-sn",
-    "target_path": "external/compat-wireless-3.5-rc3-1-sn"
+    "repository": "android_external_backports-wireless",
+    "target_path": "external/backports-wireless"
  },
  {
     "repository": "android_hardware_atheros",
