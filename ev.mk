@@ -23,9 +23,6 @@ PRODUCT_VERSION_DEVICE_SPECIFIC := p1
 
 PRODUCT_MOTD :="\n\n\n--------------------MESSAGE---------------------\nThank you for choosing Evervolv for your HP Touchpad\nPlease visit us at \#evervolv on irc.freenode.net\nFollow @preludedrew for the latest Evervolv updates\nGet the latest rom at evervolv.com\n------------------------------------------------\n"
 
-#PRODUCT_PACKAGES += \
-#    Camera
-
 # Hot reboot
 PRODUCT_PACKAGE_OVERLAYS += \
     vendor/ev/overlay/hot_reboot
