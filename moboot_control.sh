@@ -6,14 +6,23 @@ DEFAULT_RECOVERY_CFG=/boot/android.default.recovery
 
 busybox mount /boot -o remount,rw
 
-if [ $1 -eq 'recovery' ]
-then
-	CMD="ClockworkMod"
-    if [ -r ${DEFAULT_RECOVERY_CFG} ];
+REASON=$(getprop sys.reboot.reason)
+
+case "${REASON}" in
+    recovery)
+        CMD="ClockworkMod"
+		if [ -r ${DEFAULT_RECOVERY_CFG} ];
         then
             CMD=`cat ${DEFAULT_RECOVERY_CFG}`
-    fi
-fi
+        fi
+        ;;
+    webos)
+        CMD="webOS"
+        ;;
+    *)
+        CMD="${REASON}"
+        ;;
+esac
 
 # possibly we need to check if the target exists, but
 # currently moboot ignores invalid targets so we are good

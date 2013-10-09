@@ -209,15 +209,18 @@ service serial /sbin/serial
     disabled
     oneshot
 
-service reboot_recovery /system/bin/moboot_control.sh recovery
+service reboot_script /system/bin/moboot_control.sh
     class core
     user root
     group root
     disabled
     oneshot
 
-on property:sys.reboot.recovery=1
-	start reboot_recovery
+on property:sys.reboot.reason=recovery
+	start reboot_script
+
+on property:sys.reboot.reason=webos
+	start reboot_script
 
 on property:init.svc.bootanim=stopped
     start thermald
