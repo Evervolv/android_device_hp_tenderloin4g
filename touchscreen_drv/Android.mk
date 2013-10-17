@@ -1,4 +1,6 @@
 LOCAL_PATH:= $(call my-dir)
+kernel_includes += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include
+
 include $(CLEAR_VARS)
 #
 ## TP Application
@@ -9,7 +11,8 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES:= \
 	ts_srv.c \
 	digitizer.c
-LOCAL_CFLAGS:= -g -c -W -Wall -O2 -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp -funsafe-math-optimizations -D_POSIX_SOURCE -I/home/green/touchpad/hp_tenderloin_kernel/include
+LOCAL_CFLAGS:= -g -c -W -Wall -O2 -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp -funsafe-math-optimizations -D_POSIX_SOURCE
+LOCAL_C_INCLUDES:= $(kernel_includes)
 LOCAL_MODULE:=ts_srv
 LOCAL_MODULE_TAGS:= eng
 LOCAL_SHARED_LIBRARIES := liblog
@@ -23,7 +26,8 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES:= \
 	ts_srv_set.c
-LOCAL_CFLAGS:= -g -c -W -Wall -O2 -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp -funsafe-math-optimizations -D_POSIX_SOURCE -I/home/green/touchpad/hp_tenderloin_kernel/include
+LOCAL_CFLAGS:= -g -c -W -Wall -O2 -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp -funsafe-math-optimizations -D_POSIX_SOURCE
+LOCAL_C_INCLUDES:= $(kernel_includes)
 LOCAL_MODULE:=ts_srv_set
 LOCAL_MODULE_TAGS:= eng
 LOCAL_SHARED_LIBRARIES := liblog
