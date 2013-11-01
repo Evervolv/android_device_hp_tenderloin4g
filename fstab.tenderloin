@@ -5,8 +5,7 @@
 /dev/store/cm-data /data ext4 noatime,nosuid,nodev,barrier=1,noauto_da_alloc wait
 /dev/store/cm-cache /cache ext4 noatime,nosuid,nodev,barrier=1 wait
 
-#Thanks to drmarble
-/devices/virtual/block/dm-6  /storage/sdcard0  auto    defaults            voldmanaged=sdcard:auto,wait,nonremovable
+/devices/virtual/block/dm-6   auto    defaults  vfats          voldmanaged=sdcard0:auto,wait,nonremovable
 
 #recovery
 /dev/block/mmcblk0p13 /boot ext3 ro,noatime,barrier=1 recoveryonly

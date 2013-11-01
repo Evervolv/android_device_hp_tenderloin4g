@@ -34,7 +34,8 @@ on init
     mount ext3 /dev/block/mmcblk0p13 /boot remount ro wait noatime barrier=1
 
     export EXTERNAL_STORAGE /storage/sdcard0
-    mkdir /storage/sdcard0 0000 system system
+    mkdir /mnt/media_rw/sdcard0 0700 media_rw media_rw
+    mkdir /storage/sdcard0 0700 root root
     # for backwards compatibility
     symlink /storage/sdcard0 /mnt/sdcard
     symlink /mnt/sdcard /sdcard
@@ -87,10 +88,9 @@ on init
 on boot
 	mount debugfs /sys/kernel/debug /sys/kernel/debug
 
-    mkdir /data/misc/wifi 0770 system wifi
     mkdir /data/misc/wifi/sockets 0770 system wifi
-	mkdir /data/misc/dhcp
-    chown dhcp dhcp /data/misc/dhcp
+	mkdir /data/misc/dhcp 0770 dhcp dhcp
+    mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
     # bluetooth power up/down interface
@@ -153,7 +153,14 @@ on property:persist.service.adb.enable=1
 on property:persist.service.adb.enable=0
     stop adbd
 
-service wpa_supplicant /system/bin/wpa_supplicant -dd -Dnl80211 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0 /storage/sdcard0
+	class late_start
+	disabled
+
+service wpa_supplicant /system/bin/wpa_supplicant -dd -Dnl80211 \
+	 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf \
+	 -O/data/misc/wifi/sockets \
+     -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0
 	#   we will start as root and wpa_supplicant will switch to user wifi
 	#   after setting up the capabilities required for WEXT
 	#   user wifi
@@ -163,13 +170,13 @@ service wpa_supplicant /system/bin/wpa_supplicant -dd -Dnl80211 -iwlan0 -c/data/
 	disabled
 	oneshot
 
-service dhcpcd_wlan0 /system/bin/dhcpcd -ABKL
-    class main
+service dhcpcd_wlan0 /system/bin/dhcpcd -aABDKL
+    class late_start
     disabled
     oneshot
 
 service iprenew_wlan0 /system/bin/dhcpcd -n
-    class main
+    class late_start
     disabled
     oneshot
 

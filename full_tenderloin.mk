@@ -159,10 +159,7 @@ PRODUCT_PACKAGES += \
 # Audio
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
-    audio.primary.tenderloin \
-    tinymix \
-    tinyplay \
-    tinycap
+    audio.primary.tenderloin
 
 # Audio xml Files
 PRODUCT_COPY_FILES += \
