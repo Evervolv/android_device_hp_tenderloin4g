@@ -38,6 +38,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include "digitizer.h"
 
 #define TS_SOCKET_LOCATION "/dev/socket/tsdriver"
 #define TS_SOCKET_TIMEOUT 500000

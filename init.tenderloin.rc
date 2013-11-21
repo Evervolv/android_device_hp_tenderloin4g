@@ -24,7 +24,7 @@ on init
     # Also stupid lvm binary expects block devices to live in /dev,
     # not /dev/block
     symlink /dev/block/mmcblk0p14 /dev/mmcblk0p14
-    exec /boot/bin/sh -c "LVM_SYSTEM_DIR=/boot/etc/lvm /boot/usr/sbin/lvm.static vgchange -ay"
+    exec /boot/bin/sh -c "LVM_SYSTEM_DIR=/lvm /boot/usr/sbin/lvm.static vgchange -ay"
     mount ext3 /dev/block/mmcblk0p13 /boot remount ro wait noatime barrier=1
 
     # remove all the lvm stuff as well as the moboot nextboot instruction

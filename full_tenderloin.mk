@@ -32,6 +32,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin/prebuilt/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
     device/hp/tenderloin/fstab.tenderloin:root/fstab.tenderloin \
+    device/hp/tenderloin/prebuilt/lvm/lvm.conf:root/lvm/lvm.conf \
     device/hp/tenderloin/makemulti.sh:makemulti.sh \
     device/hp/tenderloin/prebuilt/boot/moboot.splash.Evervolv.tga:moboot.splash.Evervolv.tga \
     device/hp/tenderloin/prebuilt/boot/moboot.default:moboot.default
@@ -175,6 +176,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     librs_jni \
     wpa_supplicant.conf \
+    libnetcmdiface \
     sensors.tenderloin \
     lights.tenderloin \
     ts_srv \
@@ -197,7 +199,3 @@ PRODUCT_PROPERTY_OVERRIDES += \
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 $(call inherit-product, frameworks/native/build/tablet-dalvik-heap.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
-
-PRODUCT_NAME := hp_tenderloin
-PRODUCT_DEVICE := tenderloin
-PRODUCT_MODEL := Full Android on Tenderloin
