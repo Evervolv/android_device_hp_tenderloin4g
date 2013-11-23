@@ -7,7 +7,6 @@ include $(CLEAR_VARS)
 #
 #
 #LOCAL_C_INCLUDES:= uim.h
-
 LOCAL_ADDITIONAL_DEPENDENCIES := $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr
 LOCAL_SRC_FILES:= \
 	ts_srv.c \
@@ -19,6 +18,7 @@ LOCAL_MODULE_TAGS:= eng
 LOCAL_SHARED_LIBRARIES := liblog
 LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -llog
 include $(BUILD_EXECUTABLE)
+
 
 ## ts_srv_set application for changing modes of touchscreen operation
 ## used to set finger or stylus mode

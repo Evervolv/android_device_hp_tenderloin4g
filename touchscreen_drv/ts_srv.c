@@ -194,9 +194,6 @@ int touch_delay_count = TOUCH_DELAY;
 #define X_RESOLUTION_MINUS1 X_RESOLUTION - 1
 #define Y_RESOLUTION_MINUS1 Y_RESOLUTION - 1
 
-//Used to bypass the first call of the socket
-int f_run = 0;
-
 struct touchpoint {
 	// Power or weight of the touch, used for calculating the center point.
 	int pw;
@@ -962,7 +959,6 @@ int calc_point(void)
 				tp[tpoint][k].touch_major);
 			send_uevent(uinput_fd, EV_ABS, ABS_MT_POSITION_X, tp[tpoint][k].x);
 			send_uevent(uinput_fd, EV_ABS, ABS_MT_POSITION_Y, tp[tpoint][k].y);
-			send_uevent(uinput_fd, EV_ABS, ABS_MT_PRESSURE, tp[tpoint][k].pw);
 #if !USE_B_PROTOCOL
 			send_uevent(uinput_fd, EV_SYN, SYN_MT_REPORT, 0);
 #endif
@@ -1069,11 +1065,6 @@ void open_uinput(void)
 	device.absfuzz[ABS_MT_POSITION_Y] = 1;
 	device.absflat[ABS_MT_POSITION_Y] = 0;
 
-	device.absmax[ABS_MT_PRESSURE] = 2000;
-	device.absmin[ABS_MT_PRESSURE] = 250;
-	device.absfuzz[ABS_MT_PRESSURE] = 0;
-	device.absflat[ABS_MT_PRESSURE] = 0;
-
 	if (write(uinput_fd,&device,sizeof(device)) != sizeof(device))
 		ALOGE("error setup\n");
 
@@ -1092,9 +1083,6 @@ void open_uinput(void)
 		ALOGE("error trkid rel\n");
 
 	if (ioctl(uinput_fd,UI_SET_ABSBIT,ABS_MT_TOUCH_MAJOR) < 0)
-		ALOGE("error tool rel\n");
-
-	if (ioctl(uinput_fd,UI_SET_ABSBIT,ABS_MT_PRESSURE) < 0)
 		ALOGE("error tool rel\n");
 
 	//if (ioctl(uinput_fd,UI_SET_ABSBIT,ABS_MT_WIDTH_MAJOR) < 0)
@@ -1187,10 +1175,8 @@ void create_ts_socket(int *socket_fd) {
 	else
 		ALOGE("Error creating socket\n");
 #endif
-	//Sets file to 660
-	chmod(TS_SOCKET_LOCATION, 432);
-	//Sets owner/user to system
-	chown(TS_SOCKET_LOCATION, 1000,1000);
+	// change perms to 0666 (438 decimal)
+	chmod(TS_SOCKET_LOCATION, 438);
 }
 
 void set_ts_mode(int mode){
@@ -1267,7 +1253,7 @@ void write_settings_file(int setting) {
 	fclose(fp);
 }
 
-void process_socket_buffer(char buffer[], int buffer_len, int *uart_fd,
+void process_socket_buffer(char *buffer[], int buffer_len, int *uart_fd,
 	int accept_fd) {
 	// Processes data that is received from the socket
 	// O = open uart
@@ -1278,23 +1264,18 @@ void process_socket_buffer(char buffer[], int buffer_len, int *uart_fd,
 	int i, return_val, buf;
 
 	for (i=0; i<buffer_len; i++) {
-		buf = (int)buffer[i];
-
-		if (buf == 67 /* 'C' */) {
-			if(f_run == 0)
-				f_run = 1;
+		buf = (int)*buffer;
+		if (buf == 67 /* 'C' */ && *uart_fd >= 0) {
+			return_val = close(*uart_fd);
+			*uart_fd = -1;
+#if DEBUG_SOCKET
+			ALOGD("uart closed: %i\n", return_val);
+#endif
 			touchscreen_power(0);
 		}
-		if (buf == 79 /* 'O' */ && f_run == 1) {
-			touchscreen_power(1);
-			if(*uart_fd > 0){
-				close(*uart_fd);
-				*uart_fd = -1;
-#if DEBUG_SOCKET
-			ALOGD("uart closed\n");
-#endif
-			}
+		if (buf == 79 /* 'O' */ && *uart_fd < 0) {
 			open_uart(uart_fd);
+			touchscreen_power(1);
 #if DEBUG_SOCKET
 			ALOGD("uart opened at %i\n", *uart_fd);
 #endif
@@ -1347,9 +1328,9 @@ int main(int argc, char** argv)
 	if (sched_setscheduler(0 /* that's us */, SCHED_FIFO, &sparam))
 		perror("Cannot set RT priority, ignoring: ");
 
+	open_uart(&uart_fd);
 	init_digitizer_fd();
 	touchscreen_power(1);
-	open_uart(&uart_fd);
 
 	open_uinput();
 
@@ -1445,7 +1426,7 @@ int main(int argc, char** argv)
 					ALOGD("Socket received %i byte(s): '%s'\n", recv_ret,
 						recv_str);
 #endif
-					process_socket_buffer(recv_str, recv_ret,
+					process_socket_buffer((char **)&recv_str, recv_ret,
 						&uart_fd, accept_fd);
 				}
 #if DEBUG_SOCKET
