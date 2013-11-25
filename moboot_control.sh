@@ -6,9 +6,7 @@ DEFAULT_RECOVERY_CFG=/boot/android.default.recovery
 
 busybox mount /boot -o remount,rw
 
-REASON=$(getprop sys.reboot.reason)
-
-case "${REASON}" in
+case "$1" in
     recovery)
         CMD="ClockworkMod"
 		if [ -r ${DEFAULT_RECOVERY_CFG} ];

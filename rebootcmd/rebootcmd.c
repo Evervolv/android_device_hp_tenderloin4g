@@ -8,14 +8,14 @@
 
 int main(int argc, char**argv, char *envp[])
 {
-
-	ALOGD("Setting sys.reboot.reason = %s", argv[1]);
-
-	//returns 1 if error
-	ALOGD("return = %d", property_set("sys.reboot.reason", argv[1]));
-
-
-	//Needed to allow the script to write to /boot/moboot.next
-	sleep(1);
+	if(strcmp(argv[1], "recovery") == 0){
+		ALOGD("Rebooting into recovery");
+		system("/system/bin/moboot_control.sh recovery");
+	} else {
+		if(strcmp(argv[1], "altos") == 0){
+			ALOGD("Rebooting into WebOS");
+			system("/system/bin/moboot_control.sh altos");
+		}
+	}
 	return -1;
 }
