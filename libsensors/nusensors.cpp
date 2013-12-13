@@ -32,6 +32,8 @@
 #include "lsm303dlh_acc.h"
 #include "lsm303dlh_mag.h"
 #include "LightSensor.h"
+#include "MPLSensor.h"
+
 /*****************************************************************************/
 
 struct sensors_poll_context_t {
@@ -48,6 +50,7 @@ private:
         lsm303dlh_acc           = 0,
         lsm303dlh_mag           = 1,
         isl29023_als            = 2,
+        mpu3050                 = 3,
         numSensorDrivers,
         numFds,
     };
@@ -66,6 +69,10 @@ private:
                 return lsm303dlh_mag;
             case ID_L:
                 return isl29023_als;
+            case ID_GY:
+                return mpu3050;
+            case ID_T:
+                return mpu3050;
         }
         return -EINVAL;
     }
@@ -90,7 +97,10 @@ sensors_poll_context_t::sensors_poll_context_t()
     mPollFds[isl29023_als].events = POLLIN;
     mPollFds[isl29023_als].revents = 0;
 
-
+    mSensors[mpu3050] = new MPLSensor();
+    mPollFds[mpu3050].fd = mSensors[mpu3050]->getFd();
+    mPollFds[mpu3050].events = POLLIN;
+    mPollFds[mpu3050].revents = 0;
 
     int wakeFds[2];
     int result = pipe(wakeFds);
