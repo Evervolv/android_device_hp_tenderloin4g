@@ -303,6 +303,7 @@ static void start_tag(void *data, const XML_Char *tag_name,
 	unsigned int num_ctl_vals;
     struct mixer_setting mixer_setting;
 	unsigned ignored = 0;
+	unsigned int n;
 
     /* Get name, type and value attributes (these may be empty) */
     for (i = 0; attr[i]; i += 2) {
