@@ -114,7 +114,7 @@ int SensorBase::openInput(const char* inputName) {
                 name[0] = '\0';
             }
             if (!strcmp(name, inputName)) {
-            strcpy(input_name, filename);
+                strcpy(input_name, filename);
                 break;
             } else {
                 close(fd);

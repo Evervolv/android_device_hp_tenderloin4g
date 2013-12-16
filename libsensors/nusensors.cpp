@@ -64,7 +64,7 @@ private:
     int handleToDriver(int handle) const {
         switch (handle) {
             case ID_A:
-            	return lsm303dlh_acc;
+                return lsm303dlh_acc;
             case ID_M:
                 return lsm303dlh_mag;
             case ID_L:
