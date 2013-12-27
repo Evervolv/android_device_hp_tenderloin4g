@@ -1,22 +1,19 @@
 import init.tenderloin.usb.rc
 
 on early-init
-   start serial
+    start serial
 
     #set SELINUX to passive
     setenforce 0
 
 on init
-    mkdir /boot
-    mkdir /system
-    mkdir /data 0771 system system
-    mkdir /cache 0770 system cache
-
     # Enable LVM
 
     # We need to set LVM_SYSTEM_DIR for lvm to work and it does not work
     # with embedded export command until too late, so we exploit
     # the fact that there is /bin/sh on the 13th partition that we can use.
+
+    mkdir /boot
 
     mount ext3 /dev/block/mmcblk0p13 /boot wait noatime barrier=1
 
@@ -28,7 +25,6 @@ on init
     # not /dev/block
     symlink /dev/block/mmcblk0p14 /dev/mmcblk0p14
     exec /boot/bin/sh -c "LVM_SYSTEM_DIR=/lvm /boot/usr/sbin/lvm.static vgchange -ay"
-    mount ext3 /dev/block/mmcblk0p13 /boot remount ro wait noatime barrier=1
 
     # remove all the lvm stuff as well as the moboot nextboot instruction
     exec /system/xbin/rm -rf /dev/mmcblk0p14 /lib /boot/moboot.next /var
@@ -36,28 +32,58 @@ on init
     # remount /boot read-only
     mount ext3 /dev/block/mmcblk0p13 /boot remount ro wait noatime barrier=1
 
-    export EXTERNAL_STORAGE /storage/sdcard0
-    mkdir /mnt/media_rw/sdcard0 0700 media_rw media_rw
-    mkdir /storage/sdcard0 0700 root root
-    # for backwards compatibility
-    symlink /storage/sdcard0 /mnt/sdcard
-    symlink /mnt/sdcard /sdcard
+    # set up additional storage
+    mkdir /mnt/shell/emulated 0700 shell shell
+    mkdir /storage/emulated 0555 root root
+    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
+    mkdir /storage/sdcard1 0700 root root
 
+    export EXTERNAL_STORAGE /storage/emulated/legacy
+    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    export EMULATED_STORAGE_TARGET /storage/emulated
+    export SECONDARY_STORAGE /storage/sdcard1
+
+    # Support legacy paths
+    symlink /storage/emulated/legacy /sdcard
+    symlink /storage/emulated/legacy /mnt/sdcard
+    symlink /storage/emulated/legacy /storage/sdcard0
+    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+    symlink /storage/sdcard1 /external_sd
+    symlink /storage/sdcard1 /mnt/external_sd
+
+    # create directory for mounting usb drives
+    mkdir /mnt/media_rw/usbdisk 0700 media_rw media_rw
+    mkdir /storage/usbdisk 0700 root root
+    symlink /storage/usbdisk /usbdisk
+    symlink /storage/usbdisk /mnt/usbdisk
+
+on fs
+    on fs
+    # mount partitions
     mount_all /fstab.tenderloin
 
-on post-fs
-	# camera calibration
-	mkdir /data/misc/camera 0770 media system
-	mkdir /data/misc/camera/R5_MVEN003_LD2_ND0_IR0_SH0_FL1_SVEN003_DCCID1044 0770 media media
+    setprop ro.crypto.fuse_sdcard true
 
-	# camera config
+    # sdcard service is sometimes too slow and can't create nodes properly
+    start sdcard
+
+on post-fs-data
+    mkdir /data/media 0770 media_rw media_rw
+    chown media_rw media_rw /data/media
+
+    # camera calibration
+    mkdir /data/misc/camera 0770 media system
+    mkdir /data/misc/camera/R5_MVEN003_LD2_ND0_IR0_SH0_FL1_SVEN003_DCCID1044 0770 media media
+
+    # camera config
     exec /system/bin/touch /data/misc/camera/config.txt
     chown media system /data/misc/camera/config.txt
     chmod 660 /data/misc/camera/config.txt
 
-	setprop vold.post_fs_data_done 1
+    setprop vold.post_fs_data_done 1
 
-on init
+on boot
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
 
     chmod 0666 /proc/net/xt_qtaguid/ctrl
     chmod 0660 /dev/ctp_uart
@@ -72,12 +98,13 @@ on init
     chmod 0664 /dev/lm8502
     chmod 0664 /sys/class/leds/core_navi_left/brightness
     chmod 0664 /sys/class/leds/core_navi_right/brightness
+    chmod 0664 /sys/devices/i2c-3/3-0033/vibrator/vib0/vib_enable
+    chmod 0664 /sys/devices/i2c-3/3-0033/vibrator/vib0/vib_duty_cycle
     chown system system /dev/lm8502
     chown system system /sys/class/leds/core_navi_left/brightness
     chown system system /sys/class/leds/core_navi_right/brightness
-
-    #  for mounting USB storage
-    mkdir /mnt/usbdisk 0000 system system
+    chown system system /sys/devices/i2c-3/3-0033/vibrator/vib0/vib_enable
+    chown system system /sys/devices/i2c-3/3-0033/vibrator/vib0/vib_duty_cycle
 
     # For TS control
     chown system system /sys/devices/platform/cy8ctma395/vdd
@@ -88,12 +115,12 @@ on init
     # increase per-process file limit to prevent warning
     setrlimit 7 10000 10000
 
-on boot
-	mount debugfs /sys/kernel/debug /sys/kernel/debug
-
-    mkdir /data/misc/wifi/sockets 0770 system wifi
-	mkdir /data/misc/dhcp 0770 dhcp dhcp
+    # Create the directories used by the Wireless subsystem
+    mkdir /data/misc/wifi 0770 wifi wifi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
     mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
     # bluetooth power up/down interface
@@ -113,7 +140,7 @@ on boot
     chown bluetooth bluetooth /sys/user_hw/pins/bt/host_wake/level
 
     # Headphone jack detection
-	chown audio audio /dev/input/event5
+    chown audio audio /dev/input/event5
     chmod 0660 /dev/input/event5
 
     # Increase readahead buffers on MMC devices
@@ -140,7 +167,7 @@ on boot
     # allow Q6 bites to restart LPASS(Q6/audio) subsystem
     write /sys/module/subsystem_restart/parameters/restart_level 3
 
-    # modules
+    # compat-wireless modules needed for ath6kl
     insmod /system/lib/modules/nls_utf8.ko
     insmod /system/lib/modules/cifs.ko
     insmod /system/lib/modules/ntfs.ko
@@ -149,31 +176,33 @@ on boot
     insmod /system/lib/modules/cfg80211.ko
 
     # change permissions for i2c-2 device
-	chmod 0660 /dev/i2c-2
-	chown media media /dev/i2c-2
-	
-on property:persist.service.adb.enable=1
-    start adbd
+    chmod 0660 /dev/i2c-2     chown media media /dev/i2c-2
 
-on property:persist.service.adb.enable=0
-    stop adbd
+    # virtual sdcard daemon running as media_rw (1023)
 
-service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0 /storage/sdcard0
-	class late_start
-	disabled
+service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
+    class late_start
 
-service wpa_supplicant /system/bin/wpa_supplicant -dd -Dnl80211 \
-	 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf \
-	 -O/data/misc/wifi/sockets \
-     -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0
-	#   we will start as root and wpa_supplicant will switch to user wifi
-	#   after setting up the capabilities required for WEXT
-	#   user wifi
-	#   group wifi inet keystore
-	class main
-	socket wpa_wlan0 dgram 660 wifi wifi
-	disabled
-	oneshot
+service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
+    class late_start
+    disabled
+
+service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usbdisk /storage/usbdisk
+    class late_start
+    disabled
+
+service wpa_supplicant /system/bin/wpa_supplicant \
+    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
+    -O/data/misc/wifi/sockets \
+    -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0
+    #   we will start as root and wpa_supplicant will switch to user wifi
+    #   after setting up the capabilities required for WEXT
+    #   user wifi
+    #   group wifi inet keystore
+    class main
+    socket wpa_wlan0 dgram 660 wifi wifi
+    disabled
+    oneshot
 
 service dhcpcd_wlan0 /system/bin/dhcpcd -aABDKL
     class late_start
@@ -184,12 +213,6 @@ service iprenew_wlan0 /system/bin/dhcpcd -n
     class late_start
     disabled
     oneshot
-
-# bugreport is triggered by the KEY_BACK and KEY_MENU keycodes
-service bugreport /system/bin/dumpstate -d -v -o /sdcard/bugreports/bugreport
-    disabled
-    oneshot
-    keycodes 158 139
 
 service tsdriver /system/bin/ts_srv
     class core
