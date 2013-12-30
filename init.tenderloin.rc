@@ -137,6 +137,9 @@ on boot
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 384000
     write /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq 384000
 
+    # allow Q6 bites to restart LPASS(Q6/audio) subsystem
+    write /sys/module/subsystem_restart/parameters/restart_level 3
+
     # modules
     insmod /system/lib/modules/nls_utf8.ko
     insmod /system/lib/modules/cifs.ko
