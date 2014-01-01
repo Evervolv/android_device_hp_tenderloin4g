@@ -105,6 +105,7 @@
 /dev/htc-acdb             0660  system       audio
 /dev/htc-acoustic         0660  system       audio
 /dev/tpa2051d3            0660  system       audio
+/dev/msm_audio_dev_ctl    0660  system       audio
 
 # sensors
 /dev/akm8975_aot          0640  compass      system
