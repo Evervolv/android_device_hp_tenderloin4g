@@ -43,8 +43,6 @@ BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_ath6kl
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
 BOARD_WLAN_DEVICE                := ath6kl
-WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/ath6kl.ko"
-WIFI_DRIVER_MODULE_NAME          := "ath6kl"
 
 # Audio
 TARGET_QCOM_AUDIO_VARIANT := caf
@@ -100,6 +98,7 @@ USE_CAMERA_STUB := false
 BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=qcom
 BOARD_KERNEL_BASE := 0x40200000
 BOARD_PAGE_SIZE := 2048
+TARGET_KERNEL_NO_MODULES := true
 
 BOARD_NEEDS_CUTILS_LOG := true
 
