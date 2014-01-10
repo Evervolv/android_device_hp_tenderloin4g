@@ -79,13 +79,6 @@ PRODUCT_COPY_FILES += \
     device/hp/tenderloin/prebuilt/usr/keylayout/AVRCP.kl:system/usr/keylayout/AVRCP.kl \
     device/hp/tenderloin/prebuilt/usr/keylayout/pmic8058_pwrkey.kl:system/usr/keylayout/pmic8058_pwrkey.kl
 
-# Kernel modules
-PRODUCT_COPY_FILES += \
-    device/hp/tenderloin/prebuilt/modules/cifs.ko:system/lib/modules/cifs.ko \
-    device/hp/tenderloin/prebuilt/modules/nls_utf8.ko:system/lib/modules/nls_utf8.ko \
-    device/hp/tenderloin/prebuilt/modules/ntfs.ko:system/lib/modules/ntfs.ko \
-    device/hp/tenderloin/prebuilt/modules/tun.ko:system/lib/modules/tun.ko
-
 #Wifi Firmware
 # from kernel.org
 PRODUCT_COPY_FILES += \
