@@ -14,7 +14,7 @@
     "dep_type": "hardware"
  },
  {
-    "repository": "android_hardware_qcom_media-legacy-caf",
+    "repository": "android_hardware_qcom_media-caf",
     "target_path": "hardware/qcom/media-caf",
     "dep_type": "hardware"
  },
