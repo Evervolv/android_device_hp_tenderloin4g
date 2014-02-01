@@ -15,8 +15,8 @@ PRODUCT_RELEASE_NAME := touchpad
 PRODUCT_MANUFACTURER := HP
 PRODUCT_BUILD_PROP_OVERRIDES += \
     PRODUCT_NAME=touchpad \
-    BUILD_FINGERPRINT="google/mantaray/manta:4.3/JWR66V/737497:user/release-keys" \
-    PRIVATE_BUILD_DESC="mantaray-user 4.3 JWR66V 737497 release-keys" \
+    BUILD_FINGERPRINT="google/mantaray/manta:4.4.2/KOT49H/937116:user/release-keys" \
+    PRIVATE_BUILD_DESC="mantaray-user 4.4.2 KOT49H 937116 release-keys" \
     BUILD_NUMBER=228551
 
 # Set up the product codename, build version & MOTD.
