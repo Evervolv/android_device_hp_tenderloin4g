@@ -41,6 +41,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin/HPTouchpad.idc:system/usr/idc/HPTouchpad.idc
 
+# Bluetooth
+PRODUCT_COPY_FILES += \
+    device/hp/tenderloin//bluetooth/bt_vendor.conf:/system/etc/bluetooth/bt_vendor.conf \
+    device/hp/tenderloin//bluetooth/bluecore6.psr:/system/etc/bluetooth/bluecore6.psr
+
 # Dualboot Magic
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin/moboot_control.sh:system/bin/moboot_control.sh
