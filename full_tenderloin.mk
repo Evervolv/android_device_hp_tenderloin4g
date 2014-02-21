@@ -158,7 +158,8 @@ PRODUCT_PACKAGES += \
 # Audio
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
-    audio.primary.tenderloin
+    audio.primary.tenderloin \
+    libsrec_jni
 
 # Audio xml Files
 PRODUCT_COPY_FILES += \
