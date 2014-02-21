@@ -21,17 +21,27 @@ $(call inherit-product-if-exists, vendor/hp/tenderloin/tenderloin-vendor.mk)
 # This is the hardware-specific overlay, which points to the location
 # of hardware-specific resource overrides, typically the frameworks and
 # application settings that are stored in resourced.
+ifeq ($(APPEND_ZIP_VERSION),nondatamedia)
+PRODUCT_COPY_FILES += \
+    device/hp/tenderloin/init.tenderloin.rc.nondatamedia:root/init.tenderloin.rc \
+    device/hp/tenderloin/fstab.tenderloin.nondatamedia:root/fstab.tenderloin
+
+DEVICE_PACKAGE_OVERLAYS += device/hp/tenderloin/overlay-nondatamedia
+else
+PRODUCT_COPY_FILES += \
+    device/hp/tenderloin/init.tenderloin.rc:root/init.tenderloin.rc \
+    device/hp/tenderloin/fstab.tenderloin:root/fstab.tenderloin
+
 DEVICE_PACKAGE_OVERLAYS += device/hp/tenderloin/overlay
+endif
 
 # Custom init files.
 PRODUCT_COPY_FILES += \
-    device/hp/tenderloin/init.tenderloin.rc:root/init.tenderloin.rc \
     device/hp/tenderloin/init.tenderloin.usb.rc:root/init.tenderloin.usb.rc \
     device/hp/tenderloin/ueventd.tenderloin.rc:root/ueventd.tenderloin.rc
 
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin/prebuilt/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-    device/hp/tenderloin/fstab.tenderloin:root/fstab.tenderloin \
     device/hp/tenderloin/prebuilt/lvm/lvm.conf:root/lvm/lvm.conf \
     device/hp/tenderloin/makemulti.sh:makemulti.sh \
     device/hp/tenderloin/prebuilt/boot/moboot.splash.Evervolv.tga:moboot.splash.Evervolv.tga \
