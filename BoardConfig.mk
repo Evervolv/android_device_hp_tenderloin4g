@@ -118,8 +118,8 @@ TARGET_PREBUILT_KERNEL := device/hp/tenderloin/prebuilt/boot/kernel
 # Kernel
 TARGET_KERNEL_SOURCE := kernel/hp/tenderloin
 TARGET_KERNEL_CONFIG := tenderloin_android_defconfig
-
 TARGET_RECOVERY_INITRC := device/hp/tenderloin/recovery/init.rc
+BOARD_USES_ALT_KMSG_LOCATION := "/proc/last_klog"
 
 # tenderloin - these partition sizes are temporary to complete build
 TARGET_USERIMAGES_USE_EXT4 := true
