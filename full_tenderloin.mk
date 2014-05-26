@@ -35,6 +35,11 @@ PRODUCT_COPY_FILES += \
 DEVICE_PACKAGE_OVERLAYS += device/hp/tenderloin/overlay
 endif
 
+# Recovery
+PRODUCT_COPY_FILES += \
+    device/hp/tenderloin/recovery/sbin/ts_srv:recovery/root/sbin/ts_srv \
+	device/hp/tenderloin/recovery/twrp.fstab:recovery/root/etc/twrp.fstab
+
 # Custom init files.
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin/init.tenderloin.usb.rc:root/init.tenderloin.usb.rc \
