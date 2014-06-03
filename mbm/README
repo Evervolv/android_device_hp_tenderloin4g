@@ -1,0 +1,372 @@
+################################################################################
+Release notes for Ericsson MBM HAL 4.0 BETA
+################################################################################
+
+DELIVERY CONTENTS 
+********************************************************************************
+ • Ericsson RIL and GPS HAL for Android Jellybean (4.1)
+
+This release include fixes and enhancements since MBM HAL 4.0 ALPHA (ICS). See
+enhancements and fixes below.  
+
+PRODUCT STATUS
+********************************************************************************
+ • Tested on the HP TouchPad 4G (tenderloin) platform with the Ericsson F5521gw.
+
+ • Supported Android API/SDK levels:
+      API Level 14 Android 4.0 to 4.0.2 Ice Cream Sandwich
+      API Level 15 Android 4.0.3 to 4.0.4 Ice Cream Sandwich
+      API Level 16 Android 4.1 to 4.1.2 Jelly Bean
+
+ • Untested Android API/SDK levels:
+      API Level 17 Android 4.2 Jelly Bean
+      API Level 18 Android 4.3 Jelly Bean
+      API Level 19 Android 4.4 KitKat
+
+NEW FEATURES
+********************************************************************************
+ • Android 4.1.2 Support for All MBM products.
+
+KNOWN LIMITATIONS
+********************************************************************************
+ • Limited testing has been performed only on the Tenderloin platform.
+
+INSTALLATION
+********************************************************************************
+MBM Distribution Files
+--------------------------------------------------------------------------------
+ • Expand the archive under the vendor directory ($BUILD_TOP/vendor/mbm).
+
+--------------------------------------------------------------------------------
+Kernel drivers
+--------------------------------------------------------------------------------
+ • Make sure that kernel has CDC_NCM, CDC_ACM, CDC_WDM, and USBNET drivers:
+      CDC NCM Interface Driver: USB Host Driver for Network Control Model
+        -> defconfig: CONFIG_USB_NET_CDC_NCM=y
+        -> file: drivers/net/usb/cdc_ncm.c
+      CDC ACM Interface Driver: USB Abstract Control Model driver for USB
+      modems and ISDN adapters
+        -> defconfig: CONFIG_USB_ACM=y
+        -> file: drivers/usb/class/cdc-acm.h
+        -> file: drivers/usb/class/cdc-acm.c
+      CDC WDM Interface Driver: USB Abstract Control Model driver for USB WCM
+      Device Management
+        -> defconfig: CONFIG_USB_WDM=y
+        -> file: drivers/usb/class/cdc-wdm.c
+        -> file: include/linux/usb/cdc-wdm.h
+      USB NET Interface Driver: USB Networking Link Interface
+        -> defconfig: CONFIG_USB_USBNET=y
+        -> defconfig: CONFIG_USB_NET_CDCETHER=y
+        -> defconfig: CONFIG_USB_NET_CDC_SUBSET=y
+        -> file: include/linux/usb/usbnet.h
+        -> file: drivers/net/usb/usbnet.c
+ 
+ • Versions of these kernel drivers that should work for Linux 2.6.35 to 3.0.26
+   are provided in the distribution 'patches' directory.  These drivers include
+   a correction to the ncm driver for a firmware issue in the F5521gw module
+   which causes a hard data-stall.  Documentation and installation instructions
+   are provided in the kernel_patches.txt file.  It is up to the integrator
+   to make sure everything works as intended.
+
+--------------------------------------------------------------------------------
+Android system, device, and framework files
+--------------------------------------------------------------------------------
+ • The changes below are typically required to enable MBM and GPS, but will
+   vary depenging on the specific version/target product.  It is up to the
+   integrator to make sure everything works as intended.
+
+ • The RIL-Daemon may use usb0 instead of rmnet0 depending on kernel version.
+
+<device>/BoardConfig.mk ---------------------------------------------------------
+ • Verify that TARGET_DEVICE contains your device name (ex. tenderloin).
+
+ • If the following is defined, change to false:
+      .........
+      BOARD_HAVE_GPS_BCM := false
+      .........
+ • Include the following:
+      .........
+      BOARD_USES_MBM_GPS := true
+      BOARD_GPS_LIBRARIES := gps.$(TARGET_DEVICE)
+      USE_QEMU_GPS_HARDWARE := false
+      .........
+
+<device>/<device>.mk (ex. /device/hp/tenderloin/device_tenderloin.mk) ----------
+ • Set permissions for GSM telephony:
+      ......... (JB)
+      PRODUCT_COPY_FILES += \
+          frameworks/native/data/etc/android.hardware.telephony.gsm.xml: \
+          system/etc/permissions/android.hardware.telephony.gsm.xml
+      ......... (JB)
+      ......... (ICS)
+      PRODUCT_COPY_FILES += \
+          frameworks/base/data/etc/android.hardware.telephony.gsm.xml: \
+          system/etc/permissions/android.hardware.telephony.gsm.xml
+      ......... (ICS)
+
+ • Include the product packages below and others if necessary for the target
+   product. Note that Mms may be included elsewhere. 
+      .........
+      PRODUCT_PACKAGES += \
+          gps.$(TARGET_DEVICE) \
+          MbmService \
+          libmbm-ril \
+          Mms
+      .........
+
+ • Copy in other support files as desired.  See examples in the distribution
+   support directory.  
+      .........
+      PRODUCT_COPY_FILES += \
+          vendor/mbm/support/gps.conf:system/etc/gps.conf
+      .........
+
+/system/core/rootdir/init.rc ---------------------------------------------------
+ • Set TCP buffer sizes for various networks as desired, example:
+      .........
+      # Define TCP buffer sizes for various networks
+      #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+         setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+         setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
+         setprop net.tcp.buffersize.lte     524288,1048576,2560000,262144,524288,1220608
+         setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
+         setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,262144
+         setprop net.tcp.buffersize.hsupa   4092,87380,704512,4096,16384,262144
+         setprop net.tcp.buffersize.hsdpa   4092,87380,704512,4096,16384,110208
+         setprop net.tcp.buffersize.hspap   4092,87380,704512,4096,16384,262144
+         setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
+         setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+         setprop net.tcp.buffersize.evdo    4094,87380,262144,4096,16384,262144
+         setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144
+      .........
+
+ • Set the libpath and libargs in init.rc for the ril-daemon service:
+      .........
+      service ril-daemon /system/bin/rild -l /system/lib/libmbm-ril.so -- -d /dev/ttyACM1 -i rmnet0
+          class main
+          socket rild stream 660 root radio
+          socket rild-debug stream 660 radio system
+          user root
+          group radio cache inet misc audio sdcard_r sdcard_rw log
+      .........
+
+ • Alternatively, libpath and libargs can be set in <device>/systm.prop, ex.:
+      .........
+      # MBM ril
+          mobiledata.interfaces=rmnet0
+          rild.libpath=/system/lib/libmbm-ril.so
+          rild.libargs=-d /dev/ttyACM1 -i rmnet0
+      .........
+
+ • Add the following to enable selective suspend and set permissions in either
+   /system/core/rootdir/init.rc or <device>/init.<device>.rc.  USB devices may
+   vary depending on the target product.
+      .........
+      # MBM
+      on init
+
+      # Enable USB auto suspend for MBM devices
+      write /sys/bus/usb/devices/1-1/power/autosuspend 2
+      write /sys/bus/usb/devices/1-1/power/control auto
+      write /sys/bus/usb/devices/1-1/power/wakeup enabled
+      # if necessary for device
+      # write /sys/bus/usb/devices/2-1/power/autosuspend 2
+      # write /sys/bus/usb/devices/2-1/power/control auto
+      # write /sys/bus/usb/devices/2-1/power/wakeup enabled
+      # if necessary for ICS
+      # symlink /dev/bus/usb/002/049 /dev/cdc-wdm0
+      # symlink /dev/bus/usb/002/050 /dev/cdc-wdm1
+      chown system system /dev/cdc-wdm0
+      chmod 0666 /dev/cdc-wdm0
+      chown system system /dev/cdc-wdm1
+      chmod 0666 /dev/cdc-wdm1
+      .........
+
+ • Add the following system properties in either /system/core/rootdir/init.rc 
+   or <device>/init.<device>.rc depending on the target product.  
+      .........
+      # Enable Network Identity and Time Zone (NITZ) support 
+          setprop mbm.ril.config.nitz yes
+      # Enable RIL Fast Dormancy
+          setprop mbm.ril.config.fd yes
+      # Enable Neighboring Cell Info support
+      # yes = supported, no = not supported, screen = only when screen on
+          setprop mbm.ril.config.nci screen
+      # Set Loglevel for MBM GPS
+          setprop mbm.gps.config.loglevel INFO
+      # Set the device for controlling the gps
+          setprop mbm.gps.config.gps_ctrl /dev/cdc-wdm0
+      # Set the device for nmea data
+          setprop mbm.gps.config.gps_nmea /dev/ttyACM2
+      # Set the desired mode (PGPS,SUPL or STANDALONE
+          setprop mbm.gps.config.gps_pref_mode PGPS
+      # The following settings are only used for SUPL
+      # Enable network initiated requests
+          setprop mbm.gps.config.supl.enable_ni yes
+      # Allow connecting to supl servers without certificates
+          setprop mbm.gps.config.supl.uncert yes
+      .........
+
+/system/core/rootdir/ueventd.rc ------------------------------------------------
+ • Add the following in either /system/core/rootdir/ueventd.rc or
+   <device>/ueventd.<device>.rc depending on the target product. 
+      .........
+      # MBM devices
+      /dev/ttyACM0                 0666   radio      radio
+      /dev/ttyACM1                 0666   radio      radio
+      /dev/ttyACM2                 0640   system     system
+      /dev/cdc-wdm0                0666   system     system
+      /dev/cdc-wdm1                0666   system     system
+      .........
+
+<device>/frameworks/base/core/res/res/values/config.xml ------------------------
+ • Add the following values
+      .........
+     <string-array translatable="false" name="networkAttributes">
+        <item>"wifi,1,1,1,-1,true"</item>
+        <item>"mobile,0,0,2,-1,true"</item>
+        <item>"mobile_mms,2,0,2,60000,true"</item>
+        <item>"mobile_supl,3,0,2,60000,true"</item>
+        <item>"mobile_hipri,5,0,3,60000,true"</item>
+        <item>"bluetooth,7,7,2,-1,true"</item>
+        <item>"ethernet,9,9,2,-1,true"</item>
+        <item>"mobile_fota,10,0,2,60000,true"</item>
+        <item>"mobile_ims,11,0,2,60000,true"</item>
+        <item>"mobile_cbs,12,0,2,60000,true"</item>
+        <item>"wifi_p2p,13,1,0,-1,true"</item>
+    </string-array>
+      .........
+    <string-array translatable="false" name="radioAttributes">
+        <item>"1,1"</item>
+        <item>"0,1"</item>
+        <item>"7,1"</item>
+        <item>"9,1"</item>
+    </string-array>
+    <string-array translatable="false" name="config_tether_usb_regexs">
+        <item>"usb0"</item>
+        <item>"rndis0"</item>
+    </string-array>
+    <string-array translatable="false" name="config_tether_wifi_regexs">
+        <item>"wlan0"</item>
+    </string-array>
+    <string-array translatable="false" name="config_tether_bluetooth_regexs">
+        <item>bnep\\d</item>
+    </string-array>
+    <integer-array translatable="false" name="config_tether_upstream_types">
+        <item>0</item>
+        <item>1</item>
+        <item>5</item>
+        <item>7</item>
+        <item>9</item>
+    </integer-array>
+      .........
+    <bool name="config_sms_capable">true</bool>
+      .........
+
+
+################################################################################
+ENHANCEMENTS AND FIXES
+################################################################################
+RIL
+********************************************************************************
+  • Added Fast Dormancy with option to enable/disable through system properties.
+  • Added support for RIL_REQUEST_NEIGHBORINGCELL_IDS.
+  • Added option to enable/disable RIL NITZ through system properties.
+  • Added human readable status messages from E2NAP state updates.
+  • Reduced registration chatter on state change.
+  • Reduced default AT command timeout to 30 seconds.
+  • Improved screen off state handling.
+  • Added regression for AT timeout.
+  • Added processEvent debug print for easier debugging.
+  • Added human readable status messages from E2NAP state updates.
+  • Reduced module polling if no operator is found during boot.
+  • Detect and handle case when network time message is received when string
+    format has been temporarily set to UCS-2.
+  • Changed writeline() and writeCtrlZ() functions so that a single write is
+    used to send AT command.
+  • Fix for string buffer overflow errors for some DNSes configurations.
+  • Fixed SIM Hotswap issue where internet account configuration is not updated.
+  • GUI: Added better matching for E2REG and RIL Restricted State.
+  • GUI: Correction for GPRS registration states.
+  • GUI: Fixed mismatch between current and home network.
+  • POLLERR: Fixed possible race-condition on at_close() call.
+  • Correction for PDP Context activation and deactivation.
+  • Fixed issue where RIL was unable to reopen the ACM port after POLLERR.
+  • Fixed issue with phread_cond_timedwait which could cause high CPU usage.
+  • Correction for selective suspend during SIM Hotswap conditions.
+  • Fixed bug in net-utils where a double call to ifc_init could return a
+    faulty socket handle.
+  • Fixed uninitialized variable issue.
+  • Fixed two memory leaks.
+  • Fixed issue of specific AT command being mixed up with an unsolicited 
+    response.
+  • Fixed issue for concatenated Cell Broadcast messages.
+  • Fixed signal strength reporting.
+  • Fixed SIM Hotswap and streamlined the RIL to better match the Android
+    framework.
+  • Fixed MMS for when operator has different APNs for Data and MMS
+    (Requires changes to RILConstants.java and GsmDataConnectionTracker.java).
+  • Lowered the frequency of AT+CCLK by checking the time before updating it
+    in the module.
+  • Fixed bug where CONNECTING state was not properly handled.
+  • Fixed closing the AT readerloop twice when POLLERR occurs.
+  • Fixed ACM re-enumeration issue.
+  • Corrected bad screen state if SIM is PIN locked.
+  • Corrected case where SIM message store polling can get stuck if SIM is
+    PIN locked.
+  • Corrected unnecessary queuing of RSSI polls.
+  
+********************************************************************************
+GPS
+********************************************************************************
+  • Added request to service to get all current GPS settings when GPS is enabled
+    if the device is started with GPS disabled.
+  • Correction for SUPL user/pass which sometimes comes as string "null" if
+    nothing is defined.
+  • Fixed dangling ACM port during SIM Hotswap and enabled VERBOSE debugging.
+  • Changed default logging level and added AT command to error print.
+  • Only set SUPL APN info if it has changed, reduced logging to info level and
+    added support for loglevel by systemproperty.
+  • Handling some errors regarding epoll_create and epoll_wait in a specific
+    sequence of usage thereof.
+  • Handling unexpected unsolicited response *E2GPSSTAT: 1,0,0,0,0 after
+    starting GPS in SUPL mode.
+  • Fixed ACM re-enumeration issue.
+
+********************************************************************************
+MBMSERVICE
+********************************************************************************
+  • Fixed bug where service was crashing if no preferapn or carrier database
+    was available.
+  • Refactored SUPL APN selection, cleaned up default logging to info level and
+    added support for runtime loglevel control.
+  • Fixed bug where the service loop hangs/crashes after receiving a
+    CMD_SEND_ALL_INFO command from GPS lib.
+
+
+################################################################################
+SUPPORT FILES
+################################################################################
+********************************************************************************
+gps.conf
+********************************************************************************
+  • Example gps config file.
+
+********************************************************************************
+xmesg
+********************************************************************************
+  • Utility for converting dmesg with timestamps modeled after "logcat -v time".
+
+********************************************************************************
+alldtf.sh
+********************************************************************************
+  • Script to create a compressed file with Android logs.
+
+********************************************************************************
+pollerr.sh
+********************************************************************************
+  • Script to capture logs when a POLLERR occurs. 
+  
+      cp pollerr.sh /system/bin
+      chmod 755 /system/bin/pollerr.sh
+      pollerr.sh &

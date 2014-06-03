@@ -35,8 +35,8 @@
 # HTC
 /dev/smd0                 0660   system     system
 /dev/smd4                 0660   system     system
-/dev/smd3                 0660   bluetooth      bluetooth
-/dev/smd2                 0660   bluetooth      bluetooth
+/dev/smd3                 0660   bluetooth  bluetooth
+/dev/smd2                 0660   bluetooth  bluetooth
 /dev/smd7                 0640   radio      radio
 /dev/smdcntl0             0640   radio      radio
 /dev/smdcntl1             0640   radio      radio
@@ -78,61 +78,61 @@
 /dev/ppp                  0660   radio      vpn
 
 # permissions for video
-/dev/msm_vidc_reg         0660  system       audio
-/dev/msm_vidc_dec         0660  system       audio
-/dev/msm_vidc_dec_sec     0660  system       audio
-/dev/msm_vidc_enc         0660  system       audio
+/dev/msm_vidc_reg         0660  system      audio
+/dev/msm_vidc_dec         0660  system      audio
+/dev/msm_vidc_dec_sec     0660  system      audio
+/dev/msm_vidc_enc         0660  system      audio
 
 # permissions for audio
-/dev/msm_amrnb            0660  system       audio
-/dev/msm_amrwb            0660  system       audio
-/dev/msm_aac              0660  system       audio
-/dev/msm_multi_aac        0660  system       audio
-/dev/msm_aac_in           0660  system       audio
-/dev/msm_qcelp            0660  system       audio
-/dev/msm_evrc             0660  system       audio
-/dev/msm_fm               0660  system       audio
-/dev/msm_acdb             0660  system       audio
-/dev/msm_rtac             0660  system       audio
-/dev/msm_wma              0660  system       audio
-/dev/msm_wmapro           0660  system       audio
-/dev/msm_qcelp_in         0660  system       audio
-/dev/msm_evrc_in          0660  system       audio
-/dev/msm_preproc_ctl      0660  system       audio
-/dev/msm_a2dp_in          0640  system       audio
-/dev/msm_amrnb_in         0640  system       audio
-/dev/codec_aic3254        0660  system       audio
-/dev/htc-acdb             0660  system       audio
-/dev/htc-acoustic         0660  system       audio
-/dev/tpa2051d3            0660  system       audio
-/dev/msm_audio_dev_ctl    0660  system       audio
+/dev/msm_amrnb            0660  system      audio
+/dev/msm_amrwb            0660  system      audio
+/dev/msm_aac              0660  system      audio
+/dev/msm_multi_aac        0660  system      audio
+/dev/msm_aac_in           0660  system      audio
+/dev/msm_qcelp            0660  system      audio
+/dev/msm_evrc             0660  system      audio
+/dev/msm_fm               0660  system      audio
+/dev/msm_acdb             0660  system      audio
+/dev/msm_rtac             0660  system      audio
+/dev/msm_wma              0660  system      audio
+/dev/msm_wmapro           0660  system      audio
+/dev/msm_qcelp_in         0660  system      audio
+/dev/msm_evrc_in          0660  system      audio
+/dev/msm_preproc_ctl      0660  system      audio
+/dev/msm_a2dp_in          0640  system      audio
+/dev/msm_amrnb_in         0640  system      audio
+/dev/codec_aic3254        0660  system      audio
+/dev/htc-acdb             0660  system      audio
+/dev/htc-acoustic         0660  system      audio
+/dev/tpa2051d3            0660  system      audio
+/dev/msm_audio_dev_ctl    0660  system      audio
 
 # sensors
-/dev/akm8975_aot          0640  compass      system
-/dev/akm8975_daemon       0640  compass      system
-/dev/bma150               0640  compass      system
-/dev/ewtzmu2daemon        0640  system       system
-/dev/ewtzmu2hal           0640  system       system
-/dev/ewtzmu2              0640  system       system
-/dev/mpu                  0664  system       system
-/dev/mpuirq               0664  system       system
-/dev/timerirq             0664  system       system
+/dev/akm8975_aot          0640  compass     system
+/dev/akm8975_daemon       0640  compass     system
+/dev/bma150               0640  compass     system
+/dev/ewtzmu2daemon        0640  system      system
+/dev/ewtzmu2hal           0640  system      system
+/dev/ewtzmu2              0640  system      system
+/dev/mpu                  0664  system      system
+/dev/mpuirq               0664  system      system
+/dev/timerirq             0664  system      system
 
 # for simlock
-/dev/simlock              0660  radio        radio
+/dev/simlock              0660  radio       radio
 
 # sysfs properties
 /sys/devices/virtual/smdpkt/smdcntl*       open_timeout   0664 radio radio
 
 # felica device file nodes
-/dev/felica            0666   felicaclient   felicaclient
-/dev/felica_pon        0666   felicaclient   felicaclient
-/dev/felica_cen        0666   felicalock     felicalock
-/dev/felica_rfs        0444   felicaclient   felicaclient
-/dev/felica_rws        0666   felicaclient   felicaclient
-/dev/felica_int        0444   felicaclient   felicaclient
-/dev/felica_int_poll   0400   felicaclient   felicaclient
-/dev/felica_uid        0222   felicaclient   felicaclient
+/dev/felica            0666   felicaclient  felicaclient
+/dev/felica_pon        0666   felicaclient  felicaclient
+/dev/felica_cen        0666   felicalock    felicalock
+/dev/felica_rfs        0444   felicaclient  felicaclient
+/dev/felica_rws        0666   felicaclient  felicaclient
+/dev/felica_int        0444   felicaclient  felicaclient
+/dev/felica_int_poll   0400   felicaclient  felicaclient
+/dev/felica_uid        0222   felicaclient  felicaclient
 
 # for modem link
 /sys/module/serial/parameters/modem_enabled    0600    system  system
@@ -152,3 +152,10 @@
 /dev/mtp_usb              0660   root       mtp
 /dev/usb_accessory        0660   root       usb
 /dev/usb/lp*              0660   system     usb
+
+# MBM devices
+/dev/ttyACM0            0660    radio       radio
+/dev/ttyACM1            0660    radio       radio
+/dev/ttyACM2            0660    system      system
+/dev/cdc-wdm0           0660    system      system
+/dev/cdc-wdm1           0660    system      system

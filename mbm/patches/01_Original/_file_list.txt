@@ -1,0 +1,10 @@
+CDC Kernel Files (2012_03_24)
+##################################################
+include/linux/usb/cdc.h (2.6.39.4)
+drivers/net/usb/cdc_ncm.c (next-2012-03-17)
+drivers/usb/class/cdc-acm.c (2.6.39.4)
+drivers/usb/class/cdc-acm.h (2.6.39.4)
+drivers/usb/class/cdc-wdm.c (next-2012-03-09)
+include/linux/usb/cdc-wdm.h (next-2012-03-09)
+drivers/net/usb/usbnet.c (next-2012-03-24)
+include/linux/usb/usbnet.h (next-2012-03-24)

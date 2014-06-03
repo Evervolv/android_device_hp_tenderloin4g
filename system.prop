@@ -1,5 +1,5 @@
 #
-# system.prop for tenderloin
+# system.prop for tenderloin4g
 
 ro.additionalmounts=/mnt/usbdisk
 
@@ -42,3 +42,8 @@ net.bt.name=Android
 
 persist.service.adb.enable=1
 persist.sys.usb.config=mtp,adb
+
+# MBM ril
+mobiledata.interfaces=rmnet0
+rild.libpath=/system/lib/libmbm-ril.so
+rild.libargs=-d /dev/ttyACM1 -i rmnet0

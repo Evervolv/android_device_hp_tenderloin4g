@@ -6,8 +6,8 @@
 #
 #  use -r to make a clockworkmod recovery.img (from $OUT/recovery/root)
 
-if [ -d "$HOME/android/system/out/target/product/tenderloin" ]; then
-   OUT=~/android/system/out/target/product/tenderloin
+if [ -d "$HOME/android/system/out/target/product/tenderloin4g" ]; then
+   OUT=~/android/system/out/target/product/tenderloin4g
    echo "setting \$OUT to $OUT..."
 fi
 
@@ -18,7 +18,7 @@ fi
 
 # OS X users change the line below to point to mkimage
 MKIMAGE=$OUT/../../../host/linux-x86/bin/mkimage
-KERNEL=~/gh/CyanogenMod/hp-kernel-tenderloin/
+KERNEL=~/gh/CyanogenMod/hp-kernel-tenderloin4g/
 ROOT=$OUT/root
 CPIO_TARGET=ramdisk.img
 UBOOTED_RAMDISK=ramdisk.ub

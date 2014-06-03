@@ -1,0 +1,191 @@
+================================================================================
+include/linux/usb/cdc.h (2.6.39.4 -> 2.6.35)
+================================================================================
+No changes.  
+
+
+================================================================================
+OK drivers/net/usb/cdc_ncm.c  (next-2012-03-17 -> 2.6.35)
+================================================================================
+Changes required for compilation under Linux 2.6.35
+................................................................................
+Line 51 - Remove:
+  #include <linux/atomic.h>
+
+................................................................................
+MBM Changes
+................................................................................
+Line 136 - Add new field at end of struct cdc_ncm_ctx
+  u16 packet_cnt;
+
+Line 156 - Add new function:
+  static void cdc_ncm_set_urb_size(struct usbnet *dev, int size)
+
+Line 591 - Start with one minimum packet just to check that we are in sync
+
+Line 599 - Enable autosuspend & remotewakeup on the device, set rmnet name
+
+Line 977 - Discard any spurious 512 byte packets to prevent stalling
+
+Line 1062 - Set truesize to enable TCP Sliding Window to work properly
+
+Line 1142 - Make sure next URB is 512 bytes to capture any spurious pakets
+
+Line 1227 - modifed low-level module function to replace: 
+  module_usb_driver(cdc_ncm_driver)
+With:
+  module_init(cdc_ncm_init);
+  module_exit(cdc_ncm_exit);
+
+
+================================================================================
+drivers/usb/class/cdc-acm.c (2.6.39.4 -> 2.6.35)
+================================================================================
+Changes required for compilation under Linux 2.6.35
+................................................................................
+Line 784, 799, and 829 - Add *file to match defs in Linux 2.6.35 tty_driver.h
+  static int acm_tty_tiocmget(struct tty_struct *tty, struct file *file)
+  static int acm_tty_tiocmset(struct tty_struct *tty, struct file *file,
+ 			    unsigned int set, unsigned int clear)
+  static int acm_tty_ioctl(struct tty_struct *tty, struct file * file,
+			 unsigned int cmd, unsigned long arg)
+
+
+................................................................................
+MBM Changes
+................................................................................
+Line 119 - Add comm feature defines
+
+Line 128 - Add comm feature and encapsulated funtion defines
+
+Line 219 - Added code for correction of multiple writes during suspend
+
+Line 271 - Added function acm_in_callback for encapsulated status error msg
+
+Line 273 - Modified acm_ctrl_irq to handle USB_CDC_NOTIFY_RESPONSE_AVAILABLE 
+
+Line 452 - Cleanup buffer handling
+
+Line 462 - Change sequence for spin_unlock_irqrestore
+
+Line 579 - Change acm_tty_open for abstact state
+
+Line 632 - Change acm_tty_unregister to free acm response, irq
+
+Line 649 - Change acm_port_down for abstact state
+
+Line 959 - Handle NOT_REAL_ACM quirk
+
+
+
+
+
+Line 1442 - On resume, resubmit the INT URB if the port is open or not
+
+Line 1716 - Add driver_info quirk for IMC_MAIN - XMM6260, XMM6262
+
+Line 1796 - Add driver_info quirk for XMM6260 boot rom
+
+
+================================================================================
+drivers/usb/class/cdc-acm.h (2.6.39.4 -> 2.6.35)
+================================================================================
+MBM Changes
+................................................................................
+Line 49 - Added defines for abstract state
+
+Line 118 - Added state for comm features to struct acm for MBM
+  unsigned int state; /* MBM, state for comm features */
+
+Line 142 - Added additional elements to struct acm for MBM
+  struct usb_ctrlrequest *irq; /* MBM, added for get_encapsulated_command */
+  struct urb *response;
+  u8 *inbuf;
+  unsigned int bMaxPacketSize0;
+
+Line 141 - Added new interface type define
+  #define NOT_REAL_ACM	32
+
+
+================================================================================
+drivers/usb/class/cdc-wdm.c  (next-2012-03-09 -> 2.6.35)
+================================================================================
+Changes required for compilation under Linux 2.6.35
+................................................................................
+Line 36 - Add PMSG_IS_AUTO as definined in Linux 3.10.27 pm.h:
+  #define PMSG_IS_AUTO(msg) (((msg).event & PM_EVENT_AUTO) != 0)
+
+Line 695 - usb_endpoint_maxp is not in Linux 2.6.35, change:
+  desc->wMaxPacketSize = usb_endpoint_maxp(ep);
+to:
+  desc->wMaxPacketSize = le16_to_cpu(ep->wMaxPacketSize);
+
+Line 999 - return error value (fixes compile warning):
+  return 0;
+to:
+  return rv;
+
+................................................................................
+MBM Changes
+................................................................................
+Line 544 - Change poll_wait sequence to fix Select()
+  poll_wait(file, &desc->wait, wait);
+
+Line 1017 - modifed low-level module function to replace: 
+  module_usb_driver(wdm_driver);
+With:
+  module_init(wdm_init);
+  module_exit(wdm_exit);
+
+
+================================================================================
+include/linux/usb/cdc-wdm.h  (next-2012-03-09 -> 2.6.35)
+================================================================================
+New include not in Linux 2.6.35
+
+
+================================================================================
+drivers/net/usb/usbnet.c  (next-2012-03-24 -> 2.6.35)
+================================================================================
+Changes required for compilation under Linux 2.6.35
+................................................................................
+Line 50 - Add PMSG_IS_AUTO as definined in Linux 3.10.27 pm.h:
+  #define PMSG_IS_AUTO(msg) (((msg).event & PM_EVENT_AUTO) != 0)
+
+Line 94 - Add functions from Linux next-2012-03-17 skbuff.h:
+  static inline void skb_clone_tx_timestamp(struct sk_buff *skb)
+  static inline bool skb_defer_rx_timestamp(struct sk_buff *skb)
+  static inline void skb_tx_timestamp(struct sk_buff *skb)
+
+Line 331 - Since __netdev_alloc_skb_ip_align not in Linux 2.6.35, add equivalent
+
+................................................................................
+MBM Changes
+................................................................................
+Line 68 - Change:
+  (RX_MAX_QUEUE_MEMORY/(dev)->rx_urb_size) : 4)
+to:
+  ((dev)->rx_queue_enable ? (RX_MAX_QUEUE_MEMORY/(dev)->rx_urb_size) : 1) : 4)
+
+Line 530 - Remove return if netif_running
+
+Line 688 - Remove usb_kill_urb from here, add in usbnet_probe
+
+Line 745 - Move	start status interrupt transfer from usbnet_open to usbnet_probe
+
+Line 1383 - Add:
+  dev->rx_queue_enable = 1;
+
+line 1492 - Decrement suspend count here
+
+line 1524 - Remove test bit and flag conditions
+
+
+================================================================================
+include/linux/usb/usbnet.h  (next-2012-03-24 -> 2.6.35)
+================================================================================
+MBM Changes
+................................................................................
+Line 50 - Add:
+  int  rx_queue_enable;
+
