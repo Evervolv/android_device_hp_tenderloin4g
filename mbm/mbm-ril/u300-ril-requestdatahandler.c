@@ -45,8 +45,12 @@ static void *dummyDispatch(void *data, size_t datalen);
 #define dispatchRilCdmaSmsWriteArgs dummyDispatch
 #define dispatchCdmaSubscriptionSource dummyDispatch
 #define dispatchVoiceRadioTech dummyDispatch
-#define dispatchSetInitialAttachApn dummyDispatch
+/* Android 4.3 new functions */
+#define dispatchDepersonalization dummyDispatch
 #define dispatchImsSms dummyDispatch
+#define dispatchUiccSubscripton dummyDispatch
+/* Android 4.4 new functions */
+#define dispatchSetInitialAttachApn dummyDispatch
 
 static void *dispatchCallForward(void *data, size_t datalen);
 static void *dispatchDial(void *data, size_t datalen);
@@ -75,13 +79,16 @@ static void dummyResponse(void);
 #define responseStrings dummyResponse
 #define responseVoid dummyResponse
 #define responseStringsNetworks dummyResponse
-#define responseCellInfoList dummyResponse
 #define responseSimStatus dummyResponse
 #define responseRilSignalStrength dummyResponse
 #define responseDataCallList dummyResponse
 #define responseGsmBrSmsCnf dummyResponse
 #define responseCdmaBrSmsCnf dummyResponse
 #define responseSetupDataCall responseStrings
+/* Android 4.3 new functions */
+#define responseCellInfoList dummyResponse
+#define responseGetDataCallProfile dummyResponse
+#define responseUiccSubscription dummyResponse
 
 /*
 should be looked into how dispatchDataCall and others really should be handled,

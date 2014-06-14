@@ -43,6 +43,8 @@ PRODUCT_COPY_FILES += \
     device/hp/tenderloin4g/prebuilt/boot/moboot.default:moboot.default
 
 PRODUCT_COPY_FILES += \
+    device/hp/tenderloin4g/prebuilt/wifi/hostapd.conf:system/etc/wifi/hostapd.conf \
+    device/hp/tenderloin4g/prebuilt/wifi/udhcpd.conf:system/etc/wifi/udhcpd.conf \
     device/hp/tenderloin4g/makemulti.sh:makemulti.sh \
 
 PRODUCT_COPY_FILES += \
