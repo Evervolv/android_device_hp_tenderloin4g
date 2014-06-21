@@ -73,7 +73,7 @@ finally:
     return resp;
 
 error:
-    ALOGE("%s() Failed to read current time", __func__);
+    RLOGE("%s() Failed to read current time", __func__);
     goto finally;
 }
 
@@ -114,7 +114,7 @@ void sendTime(void *p)
     if (NULL == strstr(currtime, timestr))
         at_send_command("AT+CCLK=\"%s\"", timestr);
     else
-        ALOGW("%s() Skipping setting same time again!", __func__);
+        RLOGW("%s() Skipping setting same time again!", __func__);
 
     free(timestr);
     free(currtime);
@@ -127,7 +127,7 @@ void clearDeviceInfo(void)
     int err;
 
     if ((err = pthread_mutex_lock(&s_deviceInfo_mutex)) != 0)
-        ALOGE("%s() failed to take device info mutex: %s!", __func__, strerror(err));
+        RLOGE("%s() failed to take device info mutex: %s!", __func__, strerror(err));
     else {
         if (s_deviceInfo != NULL) {
             /* s_deviceInfo list shall end with NULL */
@@ -139,7 +139,7 @@ void clearDeviceInfo(void)
         }
 
         if ((err = pthread_mutex_unlock(&s_deviceInfo_mutex)) != 0)
-            ALOGE("%s() failed to release device info mutex: %s!", __func__, strerror(err));
+            RLOGE("%s() failed to release device info mutex: %s!", __func__, strerror(err));
     }
 }
 
@@ -172,7 +172,7 @@ void readDeviceInfo(void)
     }
 
     if ((err = pthread_mutex_lock(&s_deviceInfo_mutex)) != 0)
-        ALOGE("%s() failed to take device info mutex: %s!", __func__, strerror(err));
+        RLOGE("%s() failed to take device info mutex: %s!", __func__, strerror(err));
     else {
         if (linecnt > 0) {
             s_deviceInfo = calloc(linecnt + 1, sizeof(char *));
@@ -186,7 +186,7 @@ void readDeviceInfo(void)
                     if (s_deviceInfo[linecnt])
                         linecnt++;
                     else
-                        ALOGW("%s() failed to allocate memory", __func__);
+                        RLOGW("%s() failed to allocate memory", __func__);
 
                     line = line->p_next;
                 }
@@ -194,11 +194,11 @@ void readDeviceInfo(void)
                 s_deviceInfo[linecnt] = NULL;
             }
             else
-                ALOGW("%s() failed to allocate memory", __func__);
+                RLOGW("%s() failed to allocate memory", __func__);
         }
 
         if ((err = pthread_mutex_unlock(&s_deviceInfo_mutex)) != 0)
-            ALOGE("%s() failed to release device info mutex: %s!", __func__, strerror(err));
+            RLOGE("%s() failed to release device info mutex: %s!", __func__, strerror(err));
     }
     at_response_free(atresponse);
 }
@@ -210,7 +210,7 @@ char *getDeviceInfo(const char *info)
     char* resp = NULL;
 
     if ((err = pthread_mutex_lock(&s_deviceInfo_mutex)) != 0)
-        ALOGE("%s() failed to take device info mutex: %s!", __func__, strerror(err));
+        RLOGE("%s() failed to take device info mutex: %s!", __func__, strerror(err));
     else {
         if (s_deviceInfo != NULL) {
             /* s_deviceInfo list always ends with a NULL */
@@ -224,11 +224,11 @@ char *getDeviceInfo(const char *info)
             }
         }
         if ((err = pthread_mutex_unlock(&s_deviceInfo_mutex)) != 0)
-            ALOGE("%s() failed to release device info mutex: %s!", __func__, strerror(err));
+            RLOGE("%s() failed to release device info mutex: %s!", __func__, strerror(err));
     }
 
     if (resp == NULL)
-        ALOGW("%s() didn't find information for %s", __func__, info);
+        RLOGW("%s() didn't find information for %s", __func__, info);
 
     return resp;
 }
@@ -391,12 +391,12 @@ void onSIMReady(void *p)
     if (strstr(prop, "yes")) {
         err = at_send_command("AT*ETZR=3");
         if (err != AT_NOERROR) {
-            ALOGD("%s() Degrading nitz to mode 2", __func__);
+            RLOGD("%s() Degrading nitz to mode 2", __func__);
             at_send_command("AT*ETZR=2");
         }
     } else {
         at_send_command("AT*ETZR=0");
-        ALOGW("%s() Network Time Zone (NITZ) disabled!", __func__);
+        RLOGW("%s() Network Time Zone (NITZ) disabled!", __func__);
     }
 
     /* Delete Internet Account Configuration.
@@ -467,17 +467,17 @@ void setRadioState(RIL_RadioState newState)
     int err;
 
     if ((err = pthread_mutex_lock(&s_state_mutex)) != 0)
-        ALOGE("%s() failed to take state mutex: %s!", __func__, strerror(err));
+        RLOGE("%s() failed to take state mutex: %s!", __func__, strerror(err));
 
     oldState = sState;
 
-    ALOGI("%s() oldState=%s newState=%s", __func__, radioStateToString(oldState),
+    RLOGI("%s() oldState=%s newState=%s", __func__, radioStateToString(oldState),
          radioStateToString(newState));
 
     sState = newState;
 
     if ((err = pthread_mutex_unlock(&s_state_mutex)) != 0)
-        ALOGE("%s() failed to release state mutex: %s!", __func__, strerror(err));
+        RLOGE("%s() failed to release state mutex: %s!", __func__, strerror(err));
 
     /* Do these outside of the mutex. */
     if (sState != oldState || sState == RADIO_STATE_SIM_LOCKED_OR_ABSENT) {
@@ -547,7 +547,7 @@ int retryRadioPower(void)
     int err;
     int i;
 
-    ALOGD("%s()", __func__);
+    RLOGD("%s()", __func__);
     for (i=0; i<RADIO_POWER_ATTEMPTS; i++) {
         sleep(1);
         err = at_send_command("AT+CFUN=%d", getPreferredNetworkType());
@@ -572,7 +572,7 @@ void requestRadioPower(void *data, size_t datalen, RIL_Token t)
     int restricted;
 
     if (datalen < sizeof(int *)) {
-        ALOGE("%s() bad data length!", __func__);
+        RLOGE("%s() bad data length!", __func__);
         goto error;
     }
 
@@ -601,7 +601,7 @@ void requestRadioPower(void *data, size_t datalen, RIL_Token t)
         }
         setRadioState(RADIO_STATE_SIM_NOT_READY);
     } else {
-        ALOGE("%s() Erroneous input", __func__);
+        RLOGE("%s() Erroneous input", __func__);
         goto error;
     }
 

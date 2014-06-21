@@ -160,13 +160,13 @@ void startPollFastDormancy(void)
         err = ifc_statistics(ril_iface, &old_rx_packets, &old_tx_packets);
 
         if (err == -1)
-            ALOGE("%s() Unable to read /proc/net/dev. FD disabled!", __func__);
+            RLOGE("%s() Unable to read /proc/net/dev. FD disabled!", __func__);
         else if (err == 1)
-            ALOGE("%s() Interface (%s) not found. FD disabled!", __func__, ril_iface);
+            RLOGE("%s() Interface (%s) not found. FD disabled!", __func__, ril_iface);
         else {
             enqueueRILEventName(RIL_EVENT_QUEUE_NORMAL, pollFastDormancy, NULL,
                                         &NORMAL_FAST_DORMANCY_POLL, NULL);
-            ALOGI("%s() Enabled Fast Dormancy!", __func__ );
+            RLOGI("%s() Enabled Fast Dormancy!", __func__ );
         }
     }
 }
@@ -185,13 +185,13 @@ static void pollFastDormancy(void *params)
 
     /* First check that we still are connected*/
     if (getE2napState() != E2NAP_STATE_CONNECTED) {
-        ALOGI("%s() Connection Lost. Disabled Fast Dormancy!", __func__ );
+        RLOGI("%s() Connection Lost. Disabled Fast Dormancy!", __func__ );
         return;
     }
 
     /* Check that we are registered */
     if ((s_cs_status != E2REG_REGISTERED) && (s_ps_status != E2REG_REGISTERED)) {
-        ALOGI("%s() Registration lost (Restricted). Slow Dormancy!", __func__ );
+        RLOGI("%s() Registration lost (Restricted). Slow Dormancy!", __func__ );
         enqueueRILEventName(RIL_EVENT_QUEUE_NORMAL, pollFastDormancy, NULL,
                                         &SLOW_FAST_DORMANCY_POLL, NULL);
         return;
@@ -202,7 +202,7 @@ static void pollFastDormancy(void *params)
         s_creg_stat == CGREG_STAT_ROAMING ||
         s_cgreg_stat == CGREG_STAT_REG_HOME_NET ||
         s_cgreg_stat == CGREG_STAT_ROAMING)) {
-        ALOGI("%s() Registration lost. Slow Dormancy!", __func__ );
+        RLOGI("%s() Registration lost. Slow Dormancy!", __func__ );
         enqueueRILEventName(RIL_EVENT_QUEUE_NORMAL, pollFastDormancy, NULL,
                                         &SLOW_FAST_DORMANCY_POLL, NULL);
         return;
@@ -210,7 +210,7 @@ static void pollFastDormancy(void *params)
 
     /* Check that we are on UMTS */
     if (!(s_umts_rinfo)) {
-        ALOGI("%s() 2G Network. Slow Dormancy!", __func__ );
+        RLOGI("%s() 2G Network. Slow Dormancy!", __func__ );
         enqueueRILEventName(RIL_EVENT_QUEUE_NORMAL, pollFastDormancy, NULL,
                                         &SLOW_FAST_DORMANCY_POLL, NULL);
         return;
@@ -218,20 +218,20 @@ static void pollFastDormancy(void *params)
 
     err = ifc_statistics(ril_iface, &rx_packets, &tx_packets);
     if (err == -1) {
-        ALOGE("%s() Unable to read /proc/net/dev. FD disabled!", __func__);
+        RLOGE("%s() Unable to read /proc/net/dev. FD disabled!", __func__);
         return;
     } else if (err == 1) {
-        ALOGE("%s() Interface (%s) not found. FD disabled!", __func__, ril_iface);
+        RLOGE("%s() Interface (%s) not found. FD disabled!", __func__, ril_iface);
         return;
     }
 
     if ((old_rx_packets == rx_packets) && (old_rx_packets == rx_packets)) {
         if (dormant == 0) {
-            ALOGI("%s() Data Dormant (RX:%llu TX: %llu) Enter Fast Dormancy!",
+            RLOGI("%s() Data Dormant (RX:%llu TX: %llu) Enter Fast Dormancy!",
                             __func__, rx_packets, tx_packets );
             err = at_send_command("AT*EFDORM");
             if (err != AT_NOERROR) {
-                ALOGW("%s() Failed Fast Dormancy. FD disabled!", __func__);
+                RLOGW("%s() Failed Fast Dormancy. FD disabled!", __func__);
                 return;
             } else {
                 dormant = 1;
@@ -240,7 +240,7 @@ static void pollFastDormancy(void *params)
     } else {
         if (dormant == 1) {
             dormant = 0;
-            ALOGI("%s() Data transfer (RX:%llu TX: %llu) Exit Fast Dormancy!",
+            RLOGI("%s() Data transfer (RX:%llu TX: %llu) Exit Fast Dormancy!",
                             __func__, rx_packets, tx_packets );
         }
         old_rx_packets = rx_packets;
@@ -379,7 +379,7 @@ static char* convertResponseToUtf8(const char *mbmargs){
     char *output = NULL;
     char *str, *utf8;
     if(!(output = malloc(strlen(mbmargs)))) {
-        ALOGE("%s() Failed to allocate memory", __func__);
+        RLOGE("%s() Failed to allocate memory", __func__);
         return NULL;
     }
     output[0] = '\0';
@@ -390,7 +390,7 @@ static char* convertResponseToUtf8(const char *mbmargs){
         if (!(forward = strstr(forward, "\"")))
             break;
         if (!(str = strndup(back, forward-back))) {
-            ALOGE("%s() Failed to allocate memory", __func__);
+            RLOGE("%s() Failed to allocate memory", __func__);
             free(output);
             return NULL;
         }
@@ -402,7 +402,7 @@ static char* convertResponseToUtf8(const char *mbmargs){
         /* take everything inside the ucs2 string (without the "") and convert it and put the utf8 in output */
         if (!(forward = strstr(forward, "\""))) {
             free(output);
-            ALOGE("%s() Bad ucs2 message, couldn't parse it:%s", __func__, mbmargs);
+            RLOGE("%s() Bad ucs2 message, couldn't parse it:%s", __func__, mbmargs);
             return NULL;
         }
         /* The case when we have "" */
@@ -414,12 +414,12 @@ static char* convertResponseToUtf8(const char *mbmargs){
         }
         if (!(str = strndup(back, forward-back))) {
             free(output);
-            ALOGE("%s() Failed to allocate memory", __func__);
+            RLOGE("%s() Failed to allocate memory", __func__);
             return NULL;
         }
         if (!(utf8 = convertUcs2ToUtf8(str))) {
             free(str);
-            ALOGE("%s() Failed to allocate memory", __func__);
+            RLOGE("%s() Failed to allocate memory", __func__);
             free(output);
             return NULL;
         }
@@ -451,10 +451,10 @@ void onNetworkTimeReceived(const char *s)
     int tz, dst;
 
     if (!strstr(s,"/")) {
-        ALOGI("%s() Bad format, converting string from ucs2: %s", __func__, s);
+        RLOGI("%s() Bad format, converting string from ucs2: %s", __func__, s);
         ucs = convertResponseToUtf8(s);
         if (NULL == ucs) {
-            ALOGE("%s() Failed converting string from ucs2", __func__);
+            RLOGE("%s() Failed converting string from ucs2", __func__);
             return;
         }
         s = (const char *)ucs;
@@ -462,29 +462,29 @@ void onNetworkTimeReceived(const char *s)
 
     tok = line = strdup(s);
     if (NULL == tok) {
-        ALOGE("%s() Failed to allocate memory", __func__);
+        RLOGE("%s() Failed to allocate memory", __func__);
         free(ucs);
         return;
     }
 
     at_tok_start(&tok);
 
-    ALOGD("%s() Got nitz: %s", __func__, s);
+    RLOGD("%s() Got nitz: %s", __func__, s);
     if (at_tok_nextint(&tok, &tz) != 0)
-        ALOGE("%s() Failed to parse NITZ tz %s", __func__, s);
+        RLOGE("%s() Failed to parse NITZ tz %s", __func__, s);
     else if (at_tok_nextstr(&tok, &time) != 0)
-        ALOGE("%s() Failed to parse NITZ time %s", __func__, s);
+        RLOGE("%s() Failed to parse NITZ time %s", __func__, s);
     else if (at_tok_nextstr(&tok, &timestamp) != 0)
-        ALOGE("%s() Failed to parse NITZ timestamp %s", __func__, s);
+        RLOGE("%s() Failed to parse NITZ timestamp %s", __func__, s);
     else {
         if (at_tok_nextint(&tok, &dst) != 0) {
             dst = 0;
-            ALOGE("%s() Failed to parse NITZ dst, fallbacking to dst=0 %s",
+            RLOGE("%s() Failed to parse NITZ dst, fallbacking to dst=0 %s",
              __func__, s);
         }
         if (!(asprintf(&response, "%s%+03d,%02d", time + 2, tz + (dst * 4), dst))) {
             free(line);
-            ALOGE("%s() Failed to allocate string", __func__);
+            RLOGE("%s() Failed to allocate string", __func__);
             free(ucs);
             return;
         }
@@ -502,7 +502,7 @@ void onNetworkTimeReceived(const char *s)
             enqueueRILEvent(RIL_EVENT_QUEUE_NORMAL, sendTime,
                             NULL, NULL);
         } else
-            ALOGD("%s() Discarding NITZ since it hasn't changed since last update",
+            RLOGD("%s() Discarding NITZ since it hasn't changed since last update",
              __func__);
 
         free(response);
@@ -722,7 +722,7 @@ int getSignalStrength(RIL_SignalStrength_v6 *signalStrength){
 
     /* Do not get signal strength when screen is off */
     if (!getScreenState()) {
-        ALOGI("%s() Screen off, no signal strength returned", __func__);
+        RLOGI("%s() Screen off, no signal strength returned", __func__);
         signalStrength->GW_SignalStrength.signalStrength = -1;
         signalStrength->GW_SignalStrength.bitErrorRate = -1;
         return 0;
@@ -825,7 +825,7 @@ void pollSignalStrength(void *arg)
     rssi_queue = 0;
 
     if (getSignalStrength(&signalStrength) < 0)
-        ALOGE("%s() Polling the signal strength failed", __func__);
+        RLOGE("%s() Polling the signal strength failed", __func__);
     else
         RIL_onUnsolicitedResponse(RIL_UNSOL_SIGNAL_STRENGTH,
                                   &signalStrength, sizeof(RIL_SignalStrength_v6));
@@ -852,7 +852,7 @@ void onRegistrationStatusChanged(const char *s)
 
     ptr = line = strdup(s);
     if (line == NULL) {
-        ALOGE("%s() Failed to allocate memory", __func__);
+        RLOGE("%s() Failed to allocate memory", __func__);
         return;
     }
 
@@ -873,7 +873,7 @@ void onRegistrationStatusChanged(const char *s)
     /* Count number of commas */
     err = at_tok_charcounter(line, ',', &commas);
     if (err < 0) {
-        ALOGE("%s() at_tok_charcounter failed", __func__);
+        RLOGE("%s() at_tok_charcounter failed", __func__);
         goto error;
     }
 
@@ -935,7 +935,7 @@ void onRegistrationStatusChanged(const char *s)
         break;
 
     default:
-        ALOGE("%s() Invalid input", __func__);
+        RLOGE("%s() Invalid input", __func__);
         goto error;
     }
 
@@ -983,14 +983,14 @@ void onRegistrationStatusChanged(const char *s)
         RIL_onUnsolicitedResponse(RIL_UNSOL_RESPONSE_VOICE_NETWORK_STATE_CHANGED,
                                   NULL, 0);
     } else
-        ALOGW("%s() Skipping unsolicited response since no change in state", __func__);
+        RLOGW("%s() Skipping unsolicited response since no change in state", __func__);
 
 finally:
     free(ptr);
     return;
 
 error:
-    ALOGE("%s() Unable to parse (%s)", __func__, s);
+    RLOGE("%s() Unable to parse (%s)", __func__, s);
     goto finally;
 }
 
@@ -1029,7 +1029,7 @@ void onNetworkCapabilityChanged(const char *s)
             RIL_onUnsolicitedResponse(RIL_UNSOL_RESPONSE_VOICE_NETWORK_STATE_CHANGED,
                                       NULL, 0);
     } else
-        ALOGW("%s() Skipping unsolicited response since no change in state", __func__);
+        RLOGW("%s() Skipping unsolicited response since no change in state", __func__);
 
 error:
     free(line);
@@ -1111,7 +1111,7 @@ void onNetworkStatusChanged(const char *s)
                                   &resp, sizeof(int *));
         old_resp = resp;
     } else
-        ALOGW("%s() Skipping unsolicited response since no change in state", __func__);
+        RLOGW("%s() Skipping unsolicited response since no change in state", __func__);
 
     /* If registered, poll signal strength for faster update of signal bar */
     if ((s_cs_status == E2REG_REGISTERED) || (s_ps_status == E2REG_REGISTERED)) {
@@ -1170,7 +1170,7 @@ void requestSetNetworkSelectionAutomatic(void *data, size_t datalen,
        a "+COPS: 0" response. */
     if (!at_tok_hasmore(&line)) {
         if (mode == 1) {
-            ALOGD("%s() Changing manual to automatic network mode", __func__);
+            RLOGD("%s() Changing manual to automatic network mode", __func__);
             goto do_auto;
         } else
             goto check_reg;
@@ -1183,7 +1183,7 @@ void requestSetNetworkSelectionAutomatic(void *data, size_t datalen,
     /* A "+COPS: 0, n" response is also possible. */
     if (!at_tok_hasmore(&line)) {
         if (mode == 1) {
-            ALOGD("%s() Changing manual to automatic network mode", __func__);
+            RLOGD("%s() Changing manual to automatic network mode", __func__);
             goto do_auto;
         } else
             goto check_reg;
@@ -1198,7 +1198,7 @@ void requestSetNetworkSelectionAutomatic(void *data, size_t datalen,
        else let it continue the already pending scan */
     if (operator && strlen(operator) == 0) {
         if (mode == 1) {
-            ALOGD("%s() Changing manual to automatic network mode", __func__);
+            RLOGD("%s() Changing manual to automatic network mode", __func__);
             goto do_auto;
         } else
             goto check_reg;
@@ -1206,10 +1206,10 @@ void requestSetNetworkSelectionAutomatic(void *data, size_t datalen,
 
     /* Operator found */
     if (mode == 1) {
-        ALOGD("%s() Changing manual to automatic network mode", __func__);
+        RLOGD("%s() Changing manual to automatic network mode", __func__);
         goto do_auto;
     } else {
-        ALOGD("%s() Already in automatic mode with known operator, trigger a new network scan",
+        RLOGD("%s() Already in automatic mode with known operator, trigger a new network scan",
 	    __func__);
         goto do_auto;
     }
@@ -1245,7 +1245,7 @@ check_reg:
 
     /* If scanning has stopped, then perform a new scan */
     if (mode == 0) {
-        ALOGD("%s() Already in automatic mode, but not currently scanning on CS,"
+        RLOGD("%s() Already in automatic mode, but not currently scanning on CS,"
 	     "trigger a new network scan", __func__);
         goto do_auto;
     }
@@ -1277,13 +1277,13 @@ check_reg:
 
     /* If scanning has stopped, then perform a new scan */
     if (mode == 0) {
-        ALOGD("%s() Already in automatic mode, but not currently scanning on PS,"
+        RLOGD("%s() Already in automatic mode, but not currently scanning on PS,"
 	     "trigger a new network scan", __func__);
         goto do_auto;
     }
     else
     {
-        ALOGD("%s() Already in automatic mode and scanning", __func__);
+        RLOGD("%s() Already in automatic mode and scanning", __func__);
         goto finish_scan;
     }
 
@@ -1483,7 +1483,7 @@ no_current:
         p = remaining;
 
         if (line == NULL) {
-            ALOGE("%s() Null pointer while parsing COPS response."
+            RLOGE("%s() Null pointer while parsing COPS response."
 	         "This should not happen.", __func__);
             break;
         }
@@ -1593,15 +1593,15 @@ void requestSetPreferredNetworkType(void *data, size_t datalen,
     case PREF_NET_TYPE_GSM_WCDMA_AUTO:
     case PREF_NET_TYPE_GSM_WCDMA:
         arg = PREF_NET_TYPE_3G;
-        ALOGD("[%s] network type = auto", __FUNCTION__);
+        RLOGD("[%s] network type = auto", __FUNCTION__);
         break;
     case PREF_NET_TYPE_GSM_ONLY:
         arg = PREF_NET_TYPE_2G_ONLY;
-        ALOGD("[%s] network type = 2g only", __FUNCTION__);
+        RLOGD("[%s] network type = 2g only", __FUNCTION__);
         break;
     case PREF_NET_TYPE_WCDMA:
         arg = PREF_NET_TYPE_3G_ONLY;
-        ALOGD("[%s] network type = 3g only", __FUNCTION__);
+        RLOGD("[%s] network type = 3g only", __FUNCTION__);
         break;
     default:
         RIL_onRequestComplete(t, RIL_E_MODE_NOT_SUPPORTED, NULL, 0);
@@ -1731,7 +1731,7 @@ finally:
     return;
 
 error:
-    ALOGE("%s() Must never return error when radio is on", __func__);
+    RLOGE("%s() Must never return error when radio is on", __func__);
     RIL_onRequestComplete(t, RIL_E_GENERIC_FAILURE, NULL, 0);
     goto finally;
 }
@@ -1749,7 +1749,7 @@ void requestSignalStrength(void *data, size_t datalen, RIL_Token t)
     RIL_SignalStrength_v6 signalStrength;
 
     if (getSignalStrength(&signalStrength) < 0) {
-        ALOGE("%s() Must never return an error when radio is on", __func__);
+        RLOGE("%s() Must never return an error when radio is on", __func__);
         RIL_onRequestComplete(t, RIL_E_GENERIC_FAILURE, NULL, 0);
     } else
         RIL_onRequestComplete(t, RIL_E_SUCCESS, &signalStrength,
@@ -1866,7 +1866,7 @@ char *getNetworkType(int def)
         err = at_send_command_singleline("AT+CGEQNEG=%d", "+CGEQNEG:", &p_response, RIL_CID_IP);
 
         if (err != AT_NOERROR)
-            ALOGE("%s() Allocation for, or sending, CGEQNEG failed."
+            RLOGE("%s() Allocation for, or sending, CGEQNEG failed."
 	         "Using default value specified by calling function", __func__);
         else {
             line = p_response->p_intermediates->line;
@@ -1891,7 +1891,7 @@ char *getNetworkType(int def)
                 goto finally;
 
             at_response_free(p_response);
-            ALOGI("Max speed %i/%i, UL/DL", ul, dl);
+            RLOGI("Max speed %i/%i, UL/DL", ul, dl);
         }
     }
     if (s_umts_rinfo > ERINFO_UMTS_NO_UMTS_HSDPA) {
@@ -1906,7 +1906,7 @@ char *getNetworkType(int def)
         }
     }
     else if (s_gsm_rinfo) {
-        ALOGD("%s() Using 2G info: %d", __func__, s_gsm_rinfo);
+        RLOGD("%s() Using 2G info: %d", __func__, s_gsm_rinfo);
         if (s_gsm_rinfo == 1)
             network = CGREG_ACT_GSM;
         else
@@ -2020,7 +2020,7 @@ void requestGprsRegistrationState(int request, void *data,
     p = line;
     err = at_tok_charcounter(line, ',', &commas);
     if (err < 0) {
-        ALOGE("%s() at_tok_charcounter failed", __func__);
+        RLOGE("%s() at_tok_charcounter failed", __func__);
         goto error;
     }
 
@@ -2086,7 +2086,7 @@ void requestGprsRegistrationState(int request, void *data,
         break;
 
     default:
-        ALOGE("%s() Invalid input", __func__);
+        RLOGE("%s() Invalid input", __func__);
         goto error;
     }
 
@@ -2170,7 +2170,7 @@ finally:
     return;
 
 error:
-    ALOGE("%s Must never return an error when radio is on", __func__);
+    RLOGE("%s Must never return an error when radio is on", __func__);
     RIL_onRequestComplete(t, RIL_E_GENERIC_FAILURE, NULL, 0);
     goto finally;
 }
@@ -2391,7 +2391,7 @@ finally:
     return;
 
 error:
-    ALOGE("%s() Must never return an error when radio is on", __func__);
+    RLOGE("%s() Must never return an error when radio is on", __func__);
     RIL_onRequestComplete(t, RIL_E_GENERIC_FAILURE, NULL, 0);
     goto finally;
 }
@@ -2424,7 +2424,7 @@ void requestOperator(void *data, size_t datalen, RIL_Token t)
     if (!(s_reg_change)) {
         if (old_response[0] != NULL) {
             memcpy(response, old_response, sizeof(old_response));
-            ALOGW("%s() Using buffered info since no change in state", __func__);
+            RLOGW("%s() Using buffered info since no change in state", __func__);
             goto no_sim;
         }
     }

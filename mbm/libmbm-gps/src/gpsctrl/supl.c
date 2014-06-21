@@ -226,7 +226,7 @@ static char *getCharEncoding(void)
     err = at_send_command_singleline("AT+CSCS?", "+CSCS:", &p_response);
 
     if (err < 0) {
-        ALOGE("requestSetupDefaultPDP: Failed to read AT+CSCS?");
+        RLOGE("requestSetupDefaultPDP: Failed to read AT+CSCS?");
         EXIT;
         return NULL;
     }

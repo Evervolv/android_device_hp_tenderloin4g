@@ -88,7 +88,7 @@ static int initializeServiceContext(int loglevel)
     context->loglevel = loglevel;
     context->isInitialized = 1;
 
-    ALOGV("Initialized new gps service context");
+    RLOGV("Initialized new gps service context");
 
     return 0;
 }
@@ -97,7 +97,7 @@ static int initializeServiceContext(int loglevel)
 static ServiceContext* get_service_context(void)
 {
     if (!global_service_context.isInitialized)
-        ALOGE("Service context not initialized. Possible problems ahead!");
+        RLOGE("Service context not initialized. Possible problems ahead!");
     return &global_service_context;
 }
 
@@ -365,13 +365,13 @@ int service_handler_init(int loglevel)
     int ret;
 
     if (initializeServiceContext(loglevel)) {
-        ALOGE("Initialize service context failed!");
+        RLOGE("Initialize service context failed!");
         return -1;
     }
 
     ret = pthread_create(&socket_thread, NULL, socket_loop, NULL);
     if (ret < 0) {
-        ALOGE("%s error creating socket thread", __FUNCTION__);
+        RLOGE("%s error creating socket thread", __FUNCTION__);
         return -1;
     }
 
