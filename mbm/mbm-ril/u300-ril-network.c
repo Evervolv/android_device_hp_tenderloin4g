@@ -56,6 +56,14 @@ static int s_reg_change = 0;
 static int s_cops_mode = -1;
 static int rssi_queue = 0;
 
+static int s_ims_registered  = 0;        // 0==unregistered
+//static int s_ims_services    = 1;        // & 0x1 == sms over ims supported
+static int s_ims_format    = 1;          // FORMAT_3GPP(1) vs FORMAT_3GPP2(2);
+//static int s_ims_cause_retry = 0;        // 1==causes sms over ims to temp fail
+//static int s_ims_cause_perm_failure = 0; // 1==causes sms over ims to permanent fail
+//static int s_ims_gsm_retry   = 0;        // 1==causes sms over gsm to temp fail
+//static int s_ims_gsm_fail    = 0;        // 1==causes sms over gsm to permanent fail
+
 static void pollOperatorSelected(void *params);
 
 /*
@@ -1563,6 +1571,34 @@ finally:
 error:
     RIL_onRequestComplete(t, RIL_E_GENERIC_FAILURE, NULL, 0);
     goto finally;
+}
+
+/**
+ * RIL_REQUEST_IMS_REGISTRATION_STATE
+ *
+ * Request current IMS registration state
+ *
+ * response[0] is registration state: 0 - Not registered; 1 - Registered
+ * response[1] is of type RIL_RadioTechnologyFamily
+ *
+ * Valid errors: SUCCESS, RADIO_NOT_AVAILABLE, GENERIC_FAILURE
+ *
+ * TBD: change to include service supported info
+ */
+void requestImsRegistrationState(void *data, size_t datalen, RIL_Token t)
+{
+    int reply[2];
+
+    reply[0] = s_ims_registered;  /* 0==unregistered, 1==registered */
+    //reply[1] = s_ims_services;  /* TBD */
+    reply[1] = s_ims_format;      /* FORMAT_3GPP(1) vs FORMAT_3GPP2(2) */
+
+    RLOGD("IMS_REGISTRATION=%d, format=%d ", reply[0], reply[1]);
+    if (reply[1] != -1) {
+        RIL_onRequestComplete(t, RIL_E_SUCCESS, reply, sizeof(reply));
+    } else {
+        RIL_onRequestComplete(t, RIL_E_GENERIC_FAILURE, NULL, 0);
+    }
 }
 
 /*

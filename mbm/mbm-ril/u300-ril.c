@@ -567,6 +567,9 @@ static void processRequest(int request, void *data, size_t datalen, RIL_Token t)
         case RIL_REQUEST_QUERY_AVAILABLE_NETWORKS:
             requestQueryAvailableNetworks(data, datalen, t);
             break;
+        case RIL_REQUEST_IMS_REGISTRATION_STATE:
+            requestImsRegistrationState(data, datalen, t);
+            break;
         case RIL_REQUEST_SET_PREFERRED_NETWORK_TYPE:
             requestSetPreferredNetworkType(data, datalen, t);
             break;
