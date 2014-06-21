@@ -1092,7 +1092,7 @@ static int mbm_gps_init(GpsCallbacks * callbacks)
     char nmea_dev[PROPERTY_VALUE_MAX];
     char at_dev[PROPERTY_VALUE_MAX];
 
-    ALOGI("MBM-GPS version: %s", MBM_GPS_VERSION);
+    RLOGI("MBM-GPS version: %s", MBM_GPS_VERSION);
 
     context->gps_started = 0;
     context->gps_initiated = 0;

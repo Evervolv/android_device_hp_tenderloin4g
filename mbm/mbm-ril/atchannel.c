@@ -126,9 +126,9 @@ static void ac_free(void)
     (void) pthread_once(&key_once, make_key);
     if ((ac = pthread_getspecific(key)) != NULL) {
         free(ac);
-        ALOGD("%s() freed current thread AT context", __func__);
+        RLOGD("%s() freed current thread AT context", __func__);
     } else {
-        ALOGW("%s() No AT context exist for current thread, cannot free it",
+        RLOGW("%s() No AT context exist for current thread, cannot free it",
             __func__);
     }
 }
@@ -138,7 +138,7 @@ static int initializeAtContext(void)
     struct atcontext *ac = NULL;
 
     if (pthread_once(&key_once, make_key)) {
-        ALOGE("%s() Pthread_once failed!", __func__);
+        RLOGE("%s() Pthread_once failed!", __func__);
         goto error;
     }
 
@@ -147,7 +147,7 @@ static int initializeAtContext(void)
     if (ac == NULL) {
         ac = malloc(sizeof(struct atcontext));
         if (ac == NULL) {
-            ALOGE("%s() Failed to allocate memory", __func__);
+            RLOGE("%s() Failed to allocate memory", __func__);
             goto error;
         }
 
@@ -159,7 +159,7 @@ static int initializeAtContext(void)
         ac->ATBufferCur = ac->ATBuffer;
 
         if (pipe(ac->readerCmdFds)) {
-            ALOGE("%s() Failed to create pipe: %s", __func__, strerror(errno));
+            RLOGE("%s() Failed to create pipe: %s", __func__, strerror(errno));
             goto error;
         }
 
@@ -171,17 +171,17 @@ static int initializeAtContext(void)
         ac->timeoutMsec = DEFAULT_AT_TIMEOUT_MSEC;
 
         if (pthread_setspecific(key, ac)) {
-            ALOGE("%s() Calling pthread_setspecific failed!", __func__);
+            RLOGE("%s() Calling pthread_setspecific failed!", __func__);
             goto error;
         }
     }
 
-    ALOGI("Initialized new AT Context!");
+    RLOGI("Initialized new AT Context!");
 
     return 0;
 
 error:
-    ALOGE("%s() Failed initializing new AT Context!", __func__);
+    RLOGE("%s() Failed initializing new AT Context!", __func__);
     free(ac);
     return -1;
 }
@@ -194,10 +194,10 @@ static struct atcontext *getAtContext(void)
 
     if ((ac = pthread_getspecific(key)) == NULL) {
         if (s_defaultAtContext) {
-            ALOGW("WARNING! external thread use default AT Context");
+            RLOGW("WARNING! external thread use default AT Context");
             ac = s_defaultAtContext;
         } else {
-            ALOGE("WARNING! %s() called from external thread with "
+            RLOGE("WARNING! %s() called from external thread with "
                  "no defaultAtContext set!! This IS a bug! "
                  "A crash is probably nearby!", __func__);
         }
@@ -224,7 +224,7 @@ void  AT_DUMP(const char*  prefix, const char*  buff, int  len)
 {
     if (len < 0)
         len = strlen(buff);
-    ALOGD("%.*s", len, buff);
+    RLOGD("%.*s", len, buff);
 }
 #endif
 
@@ -416,7 +416,7 @@ static void processLine(const char *line)
         break;
 
         default: /* This should never be reached */
-            ALOGE("%s() Unsupported AT command type %d", __func__, ac->type);
+            RLOGE("%s() Unsupported AT command type %d", __func__, ac->type);
             handleUnsolicited(line);
         break;
     }
@@ -506,7 +506,7 @@ static const char *readline(void)
          * size argument below.
          */
         if (0 >= MAX_AT_RESPONSE - (p_read - ac->ATBuffer) - 2) {
-            ALOGE("%s() ERROR: Input line exceeded buffer", __func__);
+            RLOGE("%s() ERROR: Input line exceeded buffer", __func__);
             /* Ditch buffer and start over again. */
             ac->ATBufferCur = ac->ATBuffer;
             *ac->ATBufferCur = '\0';
@@ -526,7 +526,7 @@ static const char *readline(void)
         err = poll(pfds, 2, -1);
 
         if (err < 0) {
-            ALOGE("%s() poll: error: %s", __func__, strerror(errno));
+            RLOGE("%s() poll: error: %s", __func__, strerror(errno));
             return NULL;
         }
 
@@ -539,7 +539,7 @@ static const char *readline(void)
         }
 
         if (pfds[0].revents & POLLERR) {
-            ALOGE("%s() POLLERR event! Returning...", __func__);
+            RLOGE("%s() POLLERR event! Returning...", __func__);
             return NULL;
         }
 
@@ -575,9 +575,9 @@ static const char *readline(void)
         } else if (count <= 0) {
             /* Read error encountered or EOF reached. */
             if (count == 0)
-                ALOGD("%s() atchannel: EOF reached.", __func__);
+                RLOGD("%s() atchannel: EOF reached.", __func__);
             else
-                ALOGD("%s() atchannel: read error %s", __func__, strerror(errno));
+                RLOGD("%s() atchannel: read error %s", __func__, strerror(errno));
 
             return NULL;
         }
@@ -594,7 +594,7 @@ static const char *readline(void)
     ac->ATBufferCur = p_eol + 1;     /* This will always be <= p_read,    
                                         and there will be a \0 at *p_read. */
 
-    ALOGI("AT(%d)< %s", ac->fd, ret);
+    RLOGI("AT(%d)< %s", ac->fd, ret);
     return ret;
 }
 
@@ -619,7 +619,7 @@ static void *readerLoop(void *arg)
 {
     struct atcontext *ac = NULL;
 
-    ALOGI("Entering readerloop!");
+    RLOGI("Entering readerloop!");
 
     setAtContext((struct atcontext *) arg);
     ac = getAtContext();
@@ -656,7 +656,7 @@ static void *readerLoop(void *arg)
     }
 
     onReaderClosed();
-    ALOGI("Exiting readerloop!");
+    RLOGI("Exiting readerloop!");
     return NULL;
 }
 
@@ -680,12 +680,12 @@ static int writeline (const char *s)
         return AT_ERROR_CHANNEL_CLOSED;
     }
 
-    ALOGD("AT(%d)> %s", ac->fd, s);
+    RLOGD("AT(%d)> %s", ac->fd, s);
 
     AT_DUMP( ">> ", s, strlen(s) );
 
     if (!(asprintf(&cmd, "%s\r", s))) {
-        ALOGE("%s() Failed to allocate string", __func__);
+        RLOGE("%s() Failed to allocate string", __func__);
         return AT_ERROR_GENERIC;
     }
 
@@ -722,12 +722,12 @@ static int writeCtrlZ (const char *s)
     if (ac->fd < 0 || ac->readerClosed > 0)
         return AT_ERROR_CHANNEL_CLOSED;
 
-    ALOGD("AT> %s^Z\n", s);
+    RLOGD("AT> %s^Z\n", s);
 
     AT_DUMP( ">* ", s, strlen(s) );
 
     if (!(asprintf(&cmd, "%s\032", s))) {
-        ALOGE("%s() Failed to allocate string", __func__);
+        RLOGE("%s() Failed to allocate string", __func__);
         return AT_ERROR_GENERIC;
     }
 
@@ -836,7 +836,7 @@ int at_open(int fd, ATUnsolHandler h)
     struct atcontext *ac = NULL;
 
     if (initializeAtContext()) {
-        ALOGE("%s() InitializeAtContext failed!", __func__);
+        RLOGE("%s() InitializeAtContext failed!", __func__);
         goto error;
     }
     
@@ -875,10 +875,10 @@ void at_close(void)
 
     if (ac->fd >= 0) {
         if (close(ac->fd) != 0)
-            ALOGE("%s() FAILED to close fd %d!", __func__, ac->fd);
+            RLOGE("%s() FAILED to close fd %d!", __func__, ac->fd);
         ac->fd = -1;
     } else {
-        ALOGW("%s() Already closed!", __func__);
+        RLOGW("%s() Already closed!", __func__);
         return;
     }
 
@@ -1092,7 +1092,7 @@ int at_send_command (const char *command, ...)
     va_end(ap);
 
     if (err != AT_NOERROR)
-        ALOGI(" --- %s", at_str_err(-err));
+        RLOGI(" --- %s", at_str_err(-err));
 
     return -err;
 }
@@ -1111,7 +1111,7 @@ int at_send_command_raw (const char *command, ATResponse **pp_outResponse)
      */
 
     if (err != AT_NOERROR)
-        ALOGI(" --- %s", at_str_err(-err));
+        RLOGI(" --- %s", at_str_err(-err));
 
     return -err;
 }
@@ -1145,7 +1145,7 @@ int at_send_command_singleline (const char *command,
     va_end(ap);
 
     if (err != AT_NOERROR)
-        ALOGI(" --- %s", at_str_err(-err));
+        RLOGI(" --- %s", at_str_err(-err));
 
     return -err;
 }
@@ -1174,7 +1174,7 @@ int at_send_command_numeric (const char *command,
     }
 
     if (err != AT_NOERROR)
-        ALOGI(" --- %s", at_str_err(-err));
+        RLOGI(" --- %s", at_str_err(-err));
 
     return -err;
 }
@@ -1206,7 +1206,7 @@ int at_send_command_sms (const char *command,
     }
 
     if (err != AT_NOERROR)
-        ALOGI(" --- %s", at_str_err(-err));
+        RLOGI(" --- %s", at_str_err(-err));
 
     return -err;
 }
@@ -1240,7 +1240,7 @@ int at_send_command_multiline (const char *command,
     }
 
     if (err != AT_NOERROR)
-        ALOGI(" --- %s", at_str_err(-err));
+        RLOGI(" --- %s", at_str_err(-err));
 
     return -err;
 }
@@ -1255,7 +1255,7 @@ void at_set_timeout_msec(int timeout)
 
     ac->timeoutMsec = timeout;
 
-    ALOGI("Setting AT command timeout to %d ms", timeout);
+    RLOGI("Setting AT command timeout to %d ms", timeout);
 }
 
 /** This callback is invoked on the command thread. */
@@ -1310,7 +1310,7 @@ int at_handshake(void)
     if (err == 0) {
         /* Pause for a bit to let the input buffer drain any unmatched OK's
            (they will appear as extraneous unsolicited responses). */
-        ALOGD("%s() pausing %d ms to drain unmatched OK's...",
+        RLOGD("%s() pausing %d ms to drain unmatched OK's...",
              __func__, HANDSHAKE_TIMEOUT_MSEC);
         sleepMsec(HANDSHAKE_TIMEOUT_MSEC);
     }

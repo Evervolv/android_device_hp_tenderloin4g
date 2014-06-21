@@ -78,7 +78,7 @@ static void enqueue_held_pdu(char type, const char *sms_pdu, int len)
 {
     struct held_pdu *hpdu = malloc(sizeof(*hpdu));
     if (hpdu == NULL) {
-        ALOGE("%s() failed to allocate memory!", __func__);
+        RLOGE("%s() failed to allocate memory!", __func__);
         return;
     }
 
@@ -87,7 +87,7 @@ static void enqueue_held_pdu(char type, const char *sms_pdu, int len)
     hpdu->len = len;
     hpdu->sms_pdu = malloc(len+1);
     if (NULL == hpdu->sms_pdu) {
-        ALOGE("%s() failed to allocate memory!", __func__);
+        RLOGE("%s() failed to allocate memory!", __func__);
         free(hpdu);
         return;
     }
@@ -142,7 +142,7 @@ void isSimSmsStorageFull(void *p)
     goto exit;
 
 error:
-    ALOGE("%s() failed during AT+CPMS sending/handling!", __func__);
+    RLOGE("%s() failed during AT+CPMS sending/handling!", __func__);
 exit:
     at_response_free(atresponse);
     return;
@@ -157,7 +157,7 @@ void onNewSms(const char *sms_pdu)
      * previous new SMS or status.
      */
     if (s_outstanding_acknowledge) {
-        ALOGI("%s() Waiting for ack for previous sms/status, enqueue PDU..", __func__);
+        RLOGI("%s() Waiting for ack for previous sms/status, enqueue PDU..", __func__);
         enqueue_held_pdu(OUTSTANDING_SMS, sms_pdu, strlen(sms_pdu));
     } else {
         s_outstanding_acknowledge = 1;
@@ -176,7 +176,7 @@ void onNewStatusReport(const char *sms_pdu)
     /* Baseband will not prepend SMSC addr, but Android expects it. */
     err = asprintf(&response, "%s%s", "00", sms_pdu);
     if (err == -1) {
-        ALOGD("%s() Error allocating memory!", __func__);
+        RLOGD("%s() Error allocating memory!", __func__);
         return;
     }
 
@@ -187,7 +187,7 @@ void onNewStatusReport(const char *sms_pdu)
      * previous new SMS or status.
      */
     if (s_outstanding_acknowledge) {
-        ALOGI("%s() Waiting for ack for previous sms/status, enqueue PDU..", __func__);
+        RLOGI("%s() Waiting for ack for previous sms/status, enqueue PDU..", __func__);
         enqueue_held_pdu(OUTSTANDING_STATUS, response, strlen(response));
     } else {
         s_outstanding_acknowledge = 1;
@@ -201,17 +201,17 @@ void onNewStatusReport(const char *sms_pdu)
 void onNewBroadcastSms(const char *pdu)
 {
     char *message = NULL;
-    ALOGD("%s() Length : %d", __func__, strlen(pdu));
+    RLOGD("%s() Length : %d", __func__, strlen(pdu));
 
     if (strlen(pdu) != (2 * BSM_LENGTH)) {
-        ALOGE("%s() Broadcast Message length error! Discarding!", __func__);
+        RLOGE("%s() Broadcast Message length error! Discarding!", __func__);
         goto error;
     }
-    ALOGD("%s() PDU: %176s", __func__, pdu);
+    RLOGD("%s() PDU: %176s", __func__, pdu);
 
     message = alloca(BSM_LENGTH);
     if (!message) {
-        ALOGE("%s() error allocating memory for message! Discarding!", __func__);
+        RLOGE("%s() error allocating memory for message! Discarding!", __func__);
         goto error;
     }
 
@@ -223,7 +223,7 @@ void onNewBroadcastSms(const char *pdu)
      * RIL_REQUEST_SMS_ACKNOWLEDGE has been received.
      */
     if (s_outstanding_acknowledge) {
-        ALOGI("%s() Waiting for ack for previous sms/status, enqueue PDU..", __func__);
+        RLOGI("%s() Waiting for ack for previous sms/status, enqueue PDU..", __func__);
         enqueue_held_pdu(OUTSTANDING_CB, message, BSM_LENGTH);
     } else {
         RIL_onUnsolicitedResponse(RIL_UNSOL_RESPONSE_NEW_BROADCAST_SMS,
@@ -269,7 +269,7 @@ finally:
     return;
 
 error:
-    ALOGE("%s() Failed to parse +CMTI.", __func__);
+    RLOGE("%s() Failed to parse +CMTI.", __func__);
     goto finally;
 }
 
@@ -349,7 +349,7 @@ void requestGSMGetBroadcastSMSConfig(void *data, size_t datalen,
 
             count++;
         } else {
-            ALOGW("%s() Max limit (%d) passed, can not send all ranges "
+            RLOGW("%s() Max limit (%d) passed, can not send all ranges "
                  "reported by modem.", __func__,
                  BROADCAST_MAX_RANGES_SUPPORTED);
             break;
@@ -383,7 +383,7 @@ void requestGSMSetBroadcastSMSConfig(void *data, size_t datalen,
     RIL_GSM_BroadcastSmsConfigInfo *configInfo = NULL;
 
     count = datalen / sizeof(RIL_GSM_BroadcastSmsConfigInfo *);
-    ALOGI("Number of MID ranges in BROADCAST_SMS_CONFIG: %d", count);
+    RLOGI("Number of MID ranges in BROADCAST_SMS_CONFIG: %d", count);
 
     for (i = 0; i < count; i++) {
         configInfo = configInfoArray[i];
@@ -593,7 +593,7 @@ void requestSMSAcknowledge(void *data, size_t datalen, RIL_Token t)
             hpdu = dequeue_held_pdu(OUTSTANDING_CB);
 
         if (hpdu != NULL) {
-            ALOGE("%s() Outstanding requests in queue, dequeueing and sending.",
+            RLOGE("%s() Outstanding requests in queue, dequeueing and sending.",
              __func__);
             int unsolResponse = 0;
             char type = hpdu->type;
@@ -766,16 +766,16 @@ void requestSmsStorageFull(void *data, size_t datalen, RIL_Token t)
     switch (ack) {
     case 0:
         /* Android will handle this, no need to inform modem. always return success. */
-        ALOGI("SMS storage full");
+        RLOGI("SMS storage full");
         break;
 
     case 1:
         /* Since we are not using +CNMA command. It's fine to return without informing network */
-        ALOGI("Failed to inform network for Message Cleanup. Need cmd : ESMSMEMAVAIL");
+        RLOGI("Failed to inform network for Message Cleanup. Need cmd : ESMSMEMAVAIL");
         break;
 
     default:
-        ALOGE("%s() Invalid parameter", __func__);
+        RLOGE("%s() Invalid parameter", __func__);
         RIL_onRequestComplete(t, RIL_E_GENERIC_FAILURE, NULL, 0);
         return;
     }
@@ -808,7 +808,7 @@ int setPreferredMessageStorage(void)
 
     err = at_send_command_singleline("AT+CPMS=\"SM\",\"SM\"","+CPMS: ", &atresponse);
     if (err != AT_NOERROR) {
-        ALOGE("%s() Unable to set preferred message storage", __func__);
+        RLOGE("%s() Unable to set preferred message storage", __func__);
         goto error;
     }
 
@@ -841,7 +841,7 @@ int setPreferredMessageStorage(void)
     goto exit;
 
 error:
-    ALOGE("%s() Failed during AT+CPMS sending/handling!", __func__);
+    RLOGE("%s() Failed during AT+CPMS sending/handling!", __func__);
     return_value = 1;
 
 exit:
@@ -857,19 +857,19 @@ void checkMessageStorageReady(void *p)
     (void) p;
 
     if (RADIO_STATE_SIM_READY != getRadioState()) {
-        ALOGE("%s() SIM not ready, aborting!", __func__);
+        RLOGE("%s() SIM not ready, aborting!", __func__);
         return;
     }
 
     err = at_send_command_singleline("AT+CPMS?","+CPMS: ", NULL);
     if (err == AT_NOERROR) {
         if (setPreferredMessageStorage() == 0) {
-            ALOGI("Message storage is ready");
+            RLOGI("Message storage is ready");
             return;
         }
     }
 
-    ALOGE("%s() Message storage is not ready"
+    RLOGE("%s() Message storage is not ready"
          "A new attempt will be done in %d seconds",
          __func__, MESSAGE_STORAGE_READY_TIMER);
 

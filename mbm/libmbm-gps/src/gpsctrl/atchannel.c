@@ -129,9 +129,9 @@ static void free_at_context(void)
     (void) pthread_once(&key_once, make_key);
     if ((context = pthread_getspecific(key)) != NULL) {
         free(context);
-        ALOGV("%s() freed current thread AT context", __FUNCTION__);
+        RLOGV("%s() freed current thread AT context", __FUNCTION__);
     } else {
-        ALOGW("%s() No AT context exist for current thread, cannot free it",
+        RLOGW("%s() No AT context exist for current thread, cannot free it",
             __FUNCTION__);
     }
 }
@@ -141,7 +141,7 @@ static int initializeAtContext(int loglevel)
     struct atcontext *context = NULL;
 
     if (pthread_once(&key_once, make_key)) {
-        ALOGE("%s() Pthread_once failed!", __FUNCTION__);
+        RLOGE("%s() Pthread_once failed!", __FUNCTION__);
         goto error;
     }
 
@@ -150,7 +150,7 @@ static int initializeAtContext(int loglevel)
     if (context == NULL) {
         context = malloc(sizeof(struct atcontext));
         if (context == NULL) {
-            ALOGE("%s(): Failed to allocate memory", __FUNCTION__);
+            RLOGE("%s(): Failed to allocate memory", __FUNCTION__);
             goto error;
         }
 
@@ -163,7 +163,7 @@ static int initializeAtContext(int loglevel)
         context->loglevel = loglevel;
 
         if (pipe(context->readerCmdFds)) {
-            ALOGE("%s(): Failed to create pipe: %s", __FUNCTION__,
+            RLOGE("%s(): Failed to create pipe: %s", __FUNCTION__,
                  strerror(errno));
             goto error;
         }
@@ -176,7 +176,7 @@ static int initializeAtContext(int loglevel)
         context->timeoutMsec = DEFAULT_AT_TIMEOUT_MSEC;
 
         if (pthread_setspecific(key, context)) {
-            ALOGE("%s() calling pthread_setspecific failed!", __FUNCTION__);
+            RLOGE("%s() calling pthread_setspecific failed!", __FUNCTION__);
             goto error;
         }
     }
@@ -188,7 +188,7 @@ static int initializeAtContext(int loglevel)
     return 0;
 
 error:
-    ALOGE("%s() failed initializing new AT Context!", __FUNCTION__);
+    RLOGE("%s() failed initializing new AT Context!", __FUNCTION__);
     free(context);
     return -1;
 }
@@ -203,7 +203,7 @@ static struct atcontext *get_at_context(void)
         if (s_defaultAtContext)
             context = s_defaultAtContext;
         else {
-            ALOGE("WARNING! get_at_context() called from external thread with "
+            RLOGE("WARNING! get_at_context() called from external thread with "
                  "no defaultAtContext set!! This IS a bug! "
                  "A crash is possibly nearby!");
         }
@@ -234,7 +234,7 @@ void  AT_DUMP(const char*  prefix, const char*  buff, int  len)
 {
     if (len < 0)
         len = strlen(buff);
-    ALOGD("%.*s", len, buff);
+    RLOGD("%.*s", len, buff);
 }
 #endif
 
@@ -878,7 +878,7 @@ int at_reader_open(int fd, ATUnsolHandler h, int loglevel)
     struct atcontext *context = NULL;
 
     if (initializeAtContext(loglevel)) {
-        ALOGE("InitializeAtContext() failed!");
+        RLOGE("InitializeAtContext() failed!");
         goto error;
     }
 
@@ -916,7 +916,7 @@ void at_reader_close(void)
     struct atcontext *context = get_at_context();
 
     if(NULL == context) {
-        ALOGW("%s, context invalid", __FUNCTION__);
+        RLOGW("%s, context invalid", __FUNCTION__);
         return;
     }
 

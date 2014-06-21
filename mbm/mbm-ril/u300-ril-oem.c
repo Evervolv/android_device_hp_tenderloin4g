@@ -62,11 +62,11 @@ void requestOEMHookStrings(void *data, size_t datalen, RIL_Token t)
     int err;
     char *currtime = NULL;
 
-    ALOGD("%s() got OEM_HOOK_STRINGS: %8p %lu", __func__, data, (long) datalen);
+    RLOGD("%s() got OEM_HOOK_STRINGS: %8p %lu", __func__, data, (long) datalen);
 
     for (i = (datalen / sizeof(char *)), cur = (const char **) data;
          i > 0; cur++, i--) {
-        ALOGD("%s(): String: %s", __func__, *cur);
+        RLOGD("%s(): String: %s", __func__, *cur);
     }
 
     /* Only take the first string in the array for now */
@@ -79,7 +79,7 @@ void requestOEMHookStrings(void *data, size_t datalen, RIL_Token t)
         if (NULL == currtime)
             goto error;
         if (NULL != strstr(*cur, currtime)) {
-            ALOGW("%s() Skipping setting same time again!", __func__);
+            RLOGW("%s() Skipping setting same time again!", __func__);
             err = at_send_command_raw("AT", &atresponse);
             goto fake;
         }
