@@ -1,7 +1,7 @@
 [
  {
-    "repository": "android_kernel_hp_tenderloin",
-    "target_path": "kernel/hp/tenderloin",
+    "repository": "android_kernel_htc_msm8960",
+    "target_path": "kernel/htc/msm8960",
     "dep_type": "kernel"
  },
  {
