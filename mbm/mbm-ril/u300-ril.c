@@ -1168,7 +1168,7 @@ static void *queueRunner(void *param)
                 continue;
             }
 
-        RLOGE("%s() Looping the requestQueue!", __func__);
+        RLOGI("%s() Looping the requestQueue!", __func__);
         for (;;) {
             RILRequest *r;
             RILEvent *e;
