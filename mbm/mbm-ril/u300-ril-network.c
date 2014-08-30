@@ -983,7 +983,7 @@ void onRegistrationStatusChanged(const char *s)
         RIL_onUnsolicitedResponse(RIL_UNSOL_RESPONSE_VOICE_NETWORK_STATE_CHANGED,
                                   NULL, 0);
     } else
-        RLOGW("%s() Skipping unsolicited response since no change in state", __func__);
+        RLOGI("%s() Skipping unsolicited response since no change in state", __func__);
 
 finally:
     free(ptr);
@@ -1029,7 +1029,7 @@ void onNetworkCapabilityChanged(const char *s)
             RIL_onUnsolicitedResponse(RIL_UNSOL_RESPONSE_VOICE_NETWORK_STATE_CHANGED,
                                       NULL, 0);
     } else
-        RLOGW("%s() Skipping unsolicited response since no change in state", __func__);
+        RLOGI("%s() Skipping unsolicited response since no change in state", __func__);
 
 error:
     free(line);
@@ -1111,7 +1111,7 @@ void onNetworkStatusChanged(const char *s)
                                   &resp, sizeof(int *));
         old_resp = resp;
     } else
-        RLOGW("%s() Skipping unsolicited response since no change in state", __func__);
+        RLOGI("%s() Skipping unsolicited response since no change in state", __func__);
 
     /* If registered, poll signal strength for faster update of signal bar */
     if ((s_cs_status == E2REG_REGISTERED) || (s_ps_status == E2REG_REGISTERED)) {
@@ -2424,7 +2424,7 @@ void requestOperator(void *data, size_t datalen, RIL_Token t)
     if (!(s_reg_change)) {
         if (old_response[0] != NULL) {
             memcpy(response, old_response, sizeof(old_response));
-            RLOGW("%s() Using buffered info since no change in state", __func__);
+            RLOGI("%s() Using buffered info since no change in state", __func__);
             goto no_sim;
         }
     }
