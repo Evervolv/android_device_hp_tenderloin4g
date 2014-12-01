@@ -29,10 +29,9 @@ $(call inherit-product, device/hp/tenderloin-common/tenderloin-common.mk)
 # application settings that are stored in resourced.
 
 PRODUCT_COPY_FILES += \
-    device/hp/tenderloin4g/init.tenderloin.rc:root/init.tenderloin.rc \
-    device/hp/tenderloin4g/fstab.tenderloin:root/fstab.tenderloin
+    device/hp/tenderloin4g/init.tenderloin.rc:root/init.tenderloin.rc
 
-DEVICE_PACKAGE_OVERLAYS += device/hp/tenderloin-common/overlay-4g
+DEVICE_PACKAGE_OVERLAYS += device/hp/tenderloin4g/overlay
 
 
 # Custom init files.

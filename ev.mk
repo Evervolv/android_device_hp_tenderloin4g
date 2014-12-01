@@ -13,8 +13,8 @@ $(call inherit-product, vendor/ev/config/gsm.mk)
 PRODUCT_NAME := ev_tenderloin4g
 PRODUCT_BRAND := HP
 PRODUCT_DEVICE := tenderloin4g
-PRODUCT_MODEL := Touchpad
-PRODUCT_RELEASE_NAME := touchpad
+PRODUCT_MODEL := Touchpad4g
+PRODUCT_RELEASE_NAME := touchpad4g
 PRODUCT_MANUFACTURER := HP
 PRODUCT_BUILD_PROP_OVERRIDES += \
     PRODUCT_NAME=touchpad \

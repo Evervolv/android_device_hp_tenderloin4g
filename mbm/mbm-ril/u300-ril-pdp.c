@@ -211,7 +211,7 @@ error:
 void requestOrSendPDPContextList(RIL_Token *token)
 {
     ATResponse *atresponse = NULL;
-    RIL_Data_Call_Response_v6 response;
+    RIL_Data_Call_Response_v9 response;
     int e2napState = getE2napState();
     int err;
     int cid;
@@ -272,12 +272,12 @@ void requestOrSendPDPContextList(RIL_Token *token)
 
     if (token != NULL)
         RIL_onRequestComplete(*token, RIL_E_SUCCESS, &response,
-                sizeof(RIL_Data_Call_Response_v6));
+                sizeof(RIL_Data_Call_Response_v9));
     else {
         response.status = s_lastPdpFailCause;
         response.suggestedRetryTime = -1;
         RIL_onUnsolicitedResponse(RIL_UNSOL_DATA_CALL_LIST_CHANGED, &response,
-                sizeof(RIL_Data_Call_Response_v6));
+                sizeof(RIL_Data_Call_Response_v9));
     }
 
     free(addresses);
@@ -585,7 +585,7 @@ void requestSetupDefaultPDP(void *data, size_t datalen, RIL_Token t)
     char *dnses = NULL;
     const char *type = NULL;
 
-    RIL_Data_Call_Response_v6 response;
+    RIL_Data_Call_Response_v9 response;
 
     int e2napState = getE2napState();
     int err = -1;

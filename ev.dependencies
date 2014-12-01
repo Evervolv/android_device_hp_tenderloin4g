@@ -1,30 +1,5 @@
 [
  {
-    "repository": "android_kernel_htc_msm8960",
-    "target_path": "kernel/htc/msm8960",
-    "dep_type": "kernel"
- },
- {
-    "repository": "android_hardware_qcom_audio-caf",
-    "target_path": "hardware/qcom/audio-caf",
-    "dep_type": "hardware"
- },
- {
-    "repository": "android_hardware_qcom_display-caf",
-    "target_path": "hardware/qcom/display-caf",
-    "dep_type": "hardware"
- },
- {
-    "repository": "android_hardware_qcom_media-caf",
-    "target_path": "hardware/qcom/media-caf",
-    "dep_type": "hardware"
- },
- {
-    "repository": "android_hardware_atheros",
-    "target_path": "hardware/atheros",
-    "dep_type": "hardware"
- },
- {
     "repository": "android_device_hp_tenderloin-common",
     "target_path": "device/hp/tenderloin-common",
     "dep_type": "device"

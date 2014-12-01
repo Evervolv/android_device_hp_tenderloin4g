@@ -53,6 +53,7 @@
 #include "u300-ril-error.h"
 #include "u300-ril-stk.h"
 #include "u300-ril-device.h"
+#include "mbm-ril.h"
 
 #define LOG_TAG "RIL"
 #include <utils/Log.h>
@@ -640,7 +641,12 @@ static void processRequest(int request, void *data, size_t datalen, RIL_Token t)
             requestReportStkServiceIsRunning(data, datalen, t);
             getCachedStkMenu();
             break;
-
+        case RIL_REQUEST_ALLOW_DATA:
+            //FLINTMAN may need to do something here
+            break;
+        case RIL_REQUEST_SIM_AUTHENTICATION:
+           //FLINTMAN may need to do something here
+            break;
         default:
             ALOGW("FIXME: Unsupported request logged: %s",
                  requestToString(request));
@@ -1280,7 +1286,7 @@ const RIL_RadioFunctions *RIL_Init(const struct RIL_Env *env, int argc,
 
     ALOGD("%s() entering...", __func__);
 
-    while (-1 != (opt = getopt(argc, argv, "z:i:p:d:s:x:"))) {
+    while (-1 != (opt = getopt(argc, argv, "z:i:p:d:s:x:c:"))) {
         switch (opt) {
             case 'z':
                 loophost = optarg;
@@ -1311,6 +1317,10 @@ const RIL_RadioFunctions *RIL_Init(const struct RIL_Env *env, int argc,
                 priodevice_path = optarg;
                 ALOGD("%s() Opening priority tty device %s", __func__, priodevice_path);
                 break;
+
+            case 'c':
+                break;
+
             default:
                 usage(argv[0]);
                 return NULL;

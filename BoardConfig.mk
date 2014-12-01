@@ -1,8 +1,6 @@
 # inherit from common tenderloin
 -include device/hp/tenderloin-common/BoardConfigCommon.mk
 
-TARGET_OTA_ASSERT_DEVICE := tenderloin
-
 # ATH6KL uses hostapd built from source
 BOARD_HOSTAPD_DRIVER := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_ath6kl
@@ -18,9 +16,10 @@ BOARD_RIL_NO_CELLINFOLIST := true
 # Needed for blobs
 COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
 
-TARGET_RECOVERY_FSTAB := device/hp/tenderloin/fstab.tenderloin
-
 # Define Prebuilt kernel locations
 TARGET_PREBUILT_KERNEL := device/hp/tenderloin-common/prebuilt/boot/kernel
 
 TARGET_KERNEL_CONFIG := tenderloin4g_android_defconfig
+
+# To allow use of the touchpad recovery
+TARGET_OTA_ASSERT_DEVICE := tenderloin
