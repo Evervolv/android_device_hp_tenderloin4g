@@ -71,6 +71,8 @@ static void *dispatchGsmBrSmsCnf(void *data, size_t datalen);
 #define dispatchInts dispatchRaw
 #define dispatchDataCall dispatchStrings
 
+#define dispatchRadioCapability dispatchStrings
+
 static void dummyResponse(void);
 
 #define responseCallForwards dummyResponse
@@ -99,6 +101,11 @@ static void dummyResponse(void);
 #define responseHardwareConfig dummyResponse
 #define responseDcRtInfo dummyResponse
 
+#define responseFailCause dummyResponse
+#define responseRadioCapability dummyResponse
+#define responseLceStatus dummyResponse
+#define responseLceData dummyResponse
+#define responseActivityData dummyResponse
 
 /*
 should be looked into how dispatchDataCall and others really should be handled,

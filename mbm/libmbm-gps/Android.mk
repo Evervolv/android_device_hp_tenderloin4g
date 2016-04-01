@@ -5,7 +5,7 @@ ifeq ($(strip $(BOARD_USES_MBM_GPS)),true)
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
-API_SUPPORTED:= 21
+API_SUPPORTED:= 23
 
 # Check if supported
 ifeq "$(findstring $(PLATFORM_SDK_VERSION),$(API_SUPPORTED))" ""

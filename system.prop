@@ -36,12 +36,7 @@ ro.emmc = 1
 # bluetooth
 net.bt.name=Android
 
-persist.service.adb.enable=1
-persist.sys.usb.config=mtp,adb
-
 ro.input.noresample=1
-
-persist.sys.media.use-awesome=true
 
 # MBM ril
 mobiledata.interfaces=rmnet0
