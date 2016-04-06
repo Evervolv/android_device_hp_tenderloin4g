@@ -103,13 +103,13 @@ public class MbmServiceReceiver extends BroadcastReceiver {
                 boolean backgroundData = cm.getBackgroundDataSetting();
                 currentStatus.setBackgroundDataSetting(backgroundData);
 
-                boolean mobileDataAllowed = Settings.Secure.getInt(
+                boolean mobileDataAllowed = Settings.Global.getInt(
                         context.getContentResolver(), "mobile_data", 1) == 1;
                 currentStatus.setMobileDataAllowed(mobileDataAllowed);
 
-                boolean roamingAllowed = Settings.Secure.getInt(
+                boolean roamingAllowed = Settings.Global.getInt(
                         context.getContentResolver(),
-                        Settings.Secure.DATA_ROAMING, 1) == 1;
+                        Settings.Global.DATA_ROAMING, 1) == 1;
                 currentStatus.setRoamingAllowed(roamingAllowed);
 
                 TelephonyManager tm = (TelephonyManager) context
@@ -241,12 +241,12 @@ public class MbmServiceReceiver extends BroadcastReceiver {
             boolean backgroundData = cm.getBackgroundDataSetting();
             currentStatus.setBackgroundDataSetting(backgroundData);
 
-            boolean mobileDataAllowed = Settings.Secure.getInt(
+            boolean mobileDataAllowed = Settings.Global.getInt(
                     context.getContentResolver(), "mobile_data", 1) == 1;
             currentStatus.setMobileDataAllowed(mobileDataAllowed);
 
-            boolean roamingAllowed = Settings.Secure.getInt(
-                    context.getContentResolver(), Settings.Secure.DATA_ROAMING,
+            boolean roamingAllowed = Settings.Global.getInt(
+                    context.getContentResolver(), Settings.Global.DATA_ROAMING,
                     1) == 1;
             currentStatus.setRoamingAllowed(roamingAllowed);
         } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)) {
