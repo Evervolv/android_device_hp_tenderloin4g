@@ -265,7 +265,7 @@ void requestOrSendPDPContextList(RIL_Token *token)
             goto error;
         }
         response.addresses = addresses;
-        response.gateways = gateways;
+        response.gateways = addresses;
         response.dnses = dnses;
         response.suggestedRetryTime = -1;
     }
@@ -707,10 +707,10 @@ down:
     }
 
     response.addresses = addresses;
-    response.gateways = gateways;
+    response.gateways = addresses;
     response.dnses = dnses;
     RLOGI("%s() Setting up interface %s,%s,%s",
-        __func__, response.addresses, response.gateways, response.dnses);
+        __func__, response.addresses, response.addresses, response.dnses);
 
     e2napState = getE2napState();
 
