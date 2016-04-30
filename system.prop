@@ -7,6 +7,7 @@ ro.cwm.forbid_format=/boot
 
 wifi.supplicant_scan_interval=45
 wifi.interface=wlan0
+ro.disableWifiApFirmwareReload=true
 
 debug.sf.hw=1
 debug.fb.rgb565 = 0
