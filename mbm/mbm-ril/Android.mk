@@ -10,13 +10,6 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
-API_SUPPORTED:= 23
-
-# Check if supported
-ifeq "$(findstring $(PLATFORM_SDK_VERSION),$(API_SUPPORTED))" ""
-  $(error -- Unsupported Android version; $(PLATFORM_SDK_VERSION))
-endif
-
 LOCAL_SRC_FILES:= \
     u300-ril.c \
     u300-ril-config.h \
