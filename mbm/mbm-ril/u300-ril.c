@@ -1117,13 +1117,13 @@ static void *queueRunner(void *param)
             memset(start, 0, MAX_BUF);
             safe_read(fd, start, MAX_BUF-1);
 
-            if (start == NULL) {
-                RLOGD("%s() Oops, empty string", __func__);
-                tcflush(fd, TCIOFLUSH);
-                FD_CLR(fd, &input);
-                close(fd);
-                continue;
-            }
+          //  if (start == NULL) {
+          //      RLOGD("%s() Oops, empty string", __func__);
+          //      tcflush(fd, TCIOFLUSH);
+          //      FD_CLR(fd, &input);
+          //      close(fd);
+          //      continue;
+          //  }
 
             if (strstr(start, "EMRDY") == NULL) {
                 RLOGD("%s() Oops, this was not EMRDY: %s", __func__, start);
