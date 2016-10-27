@@ -73,6 +73,8 @@ static void *dispatchGsmBrSmsCnf(void *data, size_t datalen);
 
 #define dispatchRadioCapability dispatchStrings
 
+#define dispatchCarrierRestrictions dummyDispatch
+
 static void dummyResponse(void);
 
 #define responseCallForwards dummyResponse
@@ -107,6 +109,7 @@ static void dummyResponse(void);
 #define responseLceData dummyResponse
 #define responseActivityData dummyResponse
 
+#define responseCarrierRestrictions dummyResponse
 /*
 should be looked into how dispatchDataCall and others really should be handled,
 not just use dispatchStrings but it seems to work. This feature
