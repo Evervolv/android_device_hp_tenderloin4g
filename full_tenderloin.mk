@@ -59,8 +59,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     gps.tenderloin \
     MbmService \
-    libmbm-ril \
-    Mms
+    libmbm-ril
 
 PRODUCT_COPY_FILES += \
     device/hp/tenderloin4g/aldtf.sh:system/xbin/aldtf.sh \
@@ -68,6 +67,6 @@ PRODUCT_COPY_FILES += \
     device/hp/tenderloin4g/pollerr.sh:system/bin/pollerr.sh \
     device/hp/tenderloin4g/gps.conf:system/etc/gps.conf
 
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 $(call inherit-product, frameworks/native/build/tablet-dalvik-heap.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
