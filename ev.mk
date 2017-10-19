@@ -3,7 +3,6 @@ $(call inherit-product, device/hp/tenderloin4g/full_tenderloin.mk)
 
 # Inherit some common evervolv stuff.
 $(call inherit-product, vendor/ev/config/common_full_phone.mk)
-$(call inherit-product, vendor/ev/config/apns.mk)
 
 #
 # Setup device specific product configuration.
